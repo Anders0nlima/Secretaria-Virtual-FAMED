@@ -1,0 +1,56 @@
+﻿.bubble-wrapper {
+  display: flex;
+  margin-bottom: 0.5rem;
+}
+
+.bubble-wrapper--user {
+  justify-content: flex-end;
+}
+
+.bubble-wrapper--assistant {
+  justify-content: flex-start;
+}
+
+.bubble {
+  max-width: 80%;
+  padding: 0.6rem 0.9rem;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.bubble--user {
+  background-color: #003366;
+  color: white;
+  border-bottom-right-radius: 3px;
+}
+
+.bubble--assistant {
+  background-color: #f0f0f0;
+  color: #222;
+  border-bottom-left-radius: 3px;
+}
+
+/* Fontes */
+.bubble-sources {
+  margin-top: 0.5rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.bubble-sources-label {
+  font-weight: 600;
+  margin-right: 0.25rem;
+}
+
+.bubble-sources ul {
+  margin: 0.15rem 0 0 1rem;
+  padding: 0;
+}
+
+.bubble-sources li {
+  list-style: disc;
+}

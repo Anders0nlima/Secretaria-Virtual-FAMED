@@ -1,0 +1,40 @@
+﻿#fastapi==0.115.5
+#uvicorn[standard]==0.32.1
+#python-dotenv==1.0.1
+
+# LangChain
+#langchain==0.3.9
+#langchain-community==0.3.9
+#langchain-ollama==0.2.1
+#langchain-huggingface==0.1.2
+#langchain-chroma==0.1.4
+
+# Embeddings
+#sentence-transformers==3.3.1
+
+# Vector store
+#chromadb==0.5.20
+
+# PDF loader
+#pymupdf==1.24.14
+
+# Utilities
+#pydantic==2.10.3
+#pydantic-settings==2.6.1
+#httpx==0.28.0
+
+fastapi
+uvicorn[standard]
+python-dotenv
+sentence-transformers
+httpx
+pydantic-settings
+numpy>=2.0.0
+
+langchain-chroma
+langchain-ollama
+pymupdf
+langchain-huggingface
+langchain-community
+langchain
+

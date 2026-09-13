@@ -1,0 +1,37 @@
+﻿/* Container fixo no canto inferior direito */
+.chat-widget {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+/* Botão de toggle */
+.chat-toggle-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: #003366;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  transition: background-color 0.2s, transform 0.15s;
+  flex-shrink: 0;
+}
+
+.chat-toggle-btn:hover {
+  background-color: #00509e;
+  transform: scale(1.05);
+}
+
+.chat-toggle-btn:active {
+  transform: scale(0.97);
+}

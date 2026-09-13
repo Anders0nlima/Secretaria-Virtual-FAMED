@@ -1,0 +1,38 @@
+﻿# =========================
+# Backend (Python / FastAPI)
+# =========================
+
+# Ambientes virtuais
+.venv/
+venv/
+env/
+
+# Arquivos de ambiente (contêm variáveis sensíveis, só .env.example deve ir para o git)
+.env
+.env.*
+!.env.example
+
+# Banco de dados vetorial (gerado automaticamente)
+backend/chroma_db/
+chroma_db/
+
+# Arquivos temporários e cache do Python
+__pycache__/
+*.py[cod]
+*.class
+.pytest_cache/
+
+# =========================
+# Frontend (React / Vite)
+# =========================
+# O frontend já tem seu próprio .gitignore, mas é boa prática colocar na raiz também
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# =========================
+# Sistema Operacional
+# =========================
+.DS_Store
+Thumbs.db
