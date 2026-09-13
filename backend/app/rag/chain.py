@@ -1,6 +1,7 @@
 """
-Monta a RAG chain: retriever + prompt + LLM (Gemma 3 1B via Ollama).
+Monta a RAG chain: retriever + prompt endurecido + LLM via Ollama.
 """
+from datetime import date
 from langchain_ollama import OllamaLLM
 from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
@@ -8,22 +9,61 @@ from langchain_core.output_parsers import StrOutputParser
 from app.config import settings
 from app.rag.vectorstore import get_retriever
 
+def get_current_period(today: date) -> str:
+    """Determina o periodo letivo atual com base na data fornecida."""
+    periods = [
+        ("2026.1", date(2026, 1, 5),  date(2026, 3, 6)),
+        ("2026.2", date(2026, 3, 23), date(2026, 7, 23)),
+        ("2026.3", date(2026, 7, 1),  date(2026, 8, 28)),
+        ("2026.4", date(2026, 8, 24), date(2026, 12, 23)),
+    ]
+    active = []
+    for name, start, end in periods:
+        if start <= today <= end:
+            active.append(name)
+
+    if not active:
+        return "Nenhum periodo letivo esta ativo nesta data."
+    if len(active) == 1:
+        return f"O periodo letivo ativo hoje e o {active[0]}."
+    return f"Os periodos letivos ativos hoje sao: {', '.join(active)} (sobreposicao)."
+
+def get_dynamic_today(_):
+    """Calcula a data dinamicamente no momento da requisicao."""
+    today = date.today()
+    return today.strftime("%d de %B de %Y").replace(
+        "January", "janeiro").replace("February", "fevereiro").replace(
+        "March", "marco").replace("April", "abril").replace(
+        "May", "maio").replace("June", "junho").replace(
+        "July", "julho").replace("August", "agosto").replace(
+        "September", "setembro").replace("October", "outubro").replace(
+        "November", "novembro").replace("December", "dezembro")
+
+def get_dynamic_period(_):
+    """Calcula o periodo atual dinamicamente no momento da requisicao."""
+    return get_current_period(date.today())
+
 # ---------------------------------------------------------------------------
-# Prompt em português — instrui o modelo a responder SOMENTE com base no
-# contexto recuperado e a não inventar informações.
+# Prompt endurecido
 # ---------------------------------------------------------------------------
-PROMPT_TEMPLATE = """Você é a Secretaria Virtual da FAMED/UFPA, um assistente acadêmico prestativo e cordial.
+PROMPT_TEMPLATE = """Voce e a Secretaria Virtual da FAMED/UFPA.
 
-Responda a pergunta do usuário SOMENTE com base nas informações do Calendário Acadêmico 2026 da UFPA fornecidas abaixo no campo "Contexto".
+Data de hoje: {today}
+{current_period}
 
-Regras importantes:
-- Responda sempre em português do Brasil.
-- Se a informação não estiver no contexto, diga educadamente que não encontrou essa informação no Calendário Acadêmico e oriente o usuário a entrar em contato com a secretaria da FAMED.
-- Não invente datas, prazos ou qualquer outra informação.
-- Seja objetivo e claro.
-- Quando citar datas ou prazos, confirme as informações diretamente do contexto.
+Sua UNICA fonte de informacao e o contexto fornecido abaixo, extraido do Calendario Academico 2026 da UFPA.
 
-Contexto do Calendário Acadêmico 2026:
+REGRAS OBRIGATORIAS - siga todas sem excecao:
+1. Responda SOMENTE com informacoes que estejam EXPLICITAMENTE escritas no contexto abaixo.
+2. Quando a pergunta mencionar "esse periodo", "periodo atual" ou "agora", use a informacao de data de hoje fornecida acima para identificar o periodo correto e busque a resposta no contexto.
+3. Ao informar um periodo letivo, SEMPRE mencione a data de inicio E a data de termino.
+4. Se a informacao solicitada NAO aparecer claramente no contexto, responda EXATAMENTE assim: "Nao encontrei essa informacao no Calendario Academico 2026. Entre em contato com a secretaria da FAMED."
+5. NUNCA calcule, estime ou infira datas. Copie-as exatamente como aparecem no contexto.
+6. NUNCA afirme que algo nao existe apenas porque nao aparece no trecho recebido.
+7. Quando a pergunta for sobre um feriado especifico, responda SOMENTE sobre esse feriado, sem listar outros.
+8. Responda sempre em portugues do Brasil, de forma objetiva e direta.
+
+Contexto do Calendario Academico 2026:
 {context}
 
 Pergunta: {question}
@@ -31,35 +71,27 @@ Pergunta: {question}
 Resposta:"""
 
 prompt = PromptTemplate(
-    input_variables=["context", "question"],
+    input_variables=["today", "current_period", "context", "question"],
     template=PROMPT_TEMPLATE,
 )
 
-# ---------------------------------------------------------------------------
-# LLM via Ollama
-# ---------------------------------------------------------------------------
 llm = OllamaLLM(
     model=settings.ollama_model,
     base_url=settings.ollama_base_url,
-    temperature=0.1,  # Baixa temperatura para respostas mais precisas/factuais
+    temperature=0.0,
 )
 
-
 def format_docs(docs: list) -> str:
-    """Concatena os chunks recuperados em um único bloco de texto."""
-    return "\n\n---\n\n".join(
-        f"[Página {doc.metadata.get('page', '?')}]\n{doc.page_content}"
-        for doc in docs
-    )
-
+    return "\n\n---\n\n".join(doc.page_content for doc in docs)
 
 def build_chain():
-    """Monta e retorna a RAG chain completa."""
     retriever = get_retriever()
     chain = (
         {
             "context": retriever | format_docs,
             "question": RunnablePassthrough(),
+            "today": get_dynamic_today,
+            "current_period": get_dynamic_period,
         }
         | prompt
         | llm
@@ -67,12 +99,9 @@ def build_chain():
     )
     return chain
 
-
 def get_sources(question: str) -> list[str]:
-    """Retorna as páginas dos chunks usados como fonte para a pergunta."""
     retriever = get_retriever()
     docs = retriever.invoke(question)
-    pages = sorted(
-        {f"Calendário Acadêmico 2026 — Página {doc.metadata.get('page', '?')}" for doc in docs}
-    )
-    return pages
+    if docs:
+        return ["Calendario Academico 2026 - UFPA"]
+    return []
