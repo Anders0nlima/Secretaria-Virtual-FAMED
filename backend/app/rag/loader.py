@@ -1,26 +1,37 @@
 """
-Carrega o arquivo Markdown curado do Calendario Academico e divide em chunks semanticos.
+Carrega o arquivo Markdown curado do Calendario Academico e divide em chunks
+respeitando a estrutura de cabecalhos (##, ###) do documento.
 
-Em vez de usar o PDF bruto (que fragmenta tabelas e listas), usamos um arquivo .md
-onde cada informacao foi convertida em uma frase completa e autocontida.
+Usa MarkdownHeaderTextSplitter para garantir que cada secao (###) vire seu
+proprio chunk, evitando que secoes com temas diferentes sejam mescladas.
 """
 from pathlib import Path
-from langchain_community.document_loaders import TextLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_text_splitters import MarkdownHeaderTextSplitter, RecursiveCharacterTextSplitter
+from langchain_core.documents import Document
 
-# Caminho do arquivo curado (relativo ao diretorio backend/)
 CURATED_MD_PATH = Path(__file__).resolve().parent.parent.parent / "data" / "calendario_2026_curado.md"
+
+# Sub-splitter para secoes muito longas (ex: lista de feriados municipais)
+SUB_SPLITTER = RecursiveCharacterTextSplitter(
+    chunk_size=800,
+    chunk_overlap=50,
+    separators=["\n", ". ", " "],
+)
+
+# Cabecalhos que definem os limites de cada chunk
+HEADERS_TO_SPLIT = [
+    ("##", "secao"),
+    ("###", "subsecao"),
+]
 
 
 def load_and_split(pdf_path: Path = None) -> list:
     """
-    Carrega o Markdown curado e retorna uma lista de Documents (chunks).
+    Carrega o Markdown curado e retorna uma lista de Documents (chunks),
+    cada um correspondendo a uma secao ### do documento.
 
-    O argumento pdf_path e mantido por compatibilidade com o vectorstore,
-    mas o loader sempre usa o arquivo curado.
-
-    Returns:
-        Lista de LangChain Documents com texto e metadados.
+    Secoes maiores que 800 chars sao sub-divididas para manter
+    a qualidade dos embeddings.
     """
     if not CURATED_MD_PATH.exists():
         raise FileNotFoundError(
@@ -29,16 +40,25 @@ def load_and_split(pdf_path: Path = None) -> list:
             "existe em backend/data/"
         )
 
-    loader = TextLoader(str(CURATED_MD_PATH), encoding="utf-8")
-    documents = loader.load()
+    with open(CURATED_MD_PATH, "r", encoding="utf-8") as f:
+        content = f.read()
 
-    # chunk_size maior mantem secoes inteiras juntas (ex: lista de matriculas dos 4 periodos)
-    splitter = RecursiveCharacterTextSplitter(
-        chunk_size=900,
-        chunk_overlap=100,
-        separators=["\n\n", "\n", ". ", " ", ""],
+    # Passo 1: Dividir pelo Markdown headers (## e ###)
+    # Cada secao ### vira seu proprio documento
+    md_splitter = MarkdownHeaderTextSplitter(
+        headers_to_split_on=HEADERS_TO_SPLIT,
+        strip_headers=False,
     )
-    chunks = splitter.split_documents(documents)
+    md_docs = md_splitter.split_text(content)
 
-    print(f"[Loader] Arquivo curado carregado: {len(chunks)} chunks gerados")
-    return chunks
+    # Passo 2: Sub-dividir secoes muito longas (ex: 23 feriados municipais)
+    final_chunks = []
+    for doc in md_docs:
+        if len(doc.page_content) > 800:
+            sub_chunks = SUB_SPLITTER.split_documents([doc])
+            final_chunks.extend(sub_chunks)
+        else:
+            final_chunks.append(doc)
+
+    print(f"[Loader] Arquivo curado carregado: {len(final_chunks)} chunks gerados")
+    return final_chunks
