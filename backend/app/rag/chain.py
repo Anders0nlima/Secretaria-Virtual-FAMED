@@ -54,7 +54,10 @@ def format_date_pt(d: date) -> str:
 TEMPORAL_KEYWORDS = [
     "atual", "agora", "esse periodo", "este periodo",
     "esse período", "este período", "hoje", "vigente",
-    "corrente", "em curso",
+    "corrente", "em curso", "desse periodo", "desse período",
+    "deste periodo", "deste período", "desse semestre", "deste semestre",
+    "nesse periodo", "nesse período", "neste periodo", "neste período",
+    "nesse semestre", "neste semestre"
 ]
 
 def augment_query(question: str) -> str:
@@ -89,18 +92,18 @@ def get_dynamic_period(_=None) -> str:
 # Prompt endurecido com regras de disambiguacao
 # ---------------------------------------------------------------------------
 
-PROMPT_TEMPLATE = """Voce e a Secretaria Virtual da FAMED/UFPA.
+PROMPT_TEMPLATE = """Voce e a Secretaria Virtual da FAMED/UFPA (Faculdade de Medicina da Universidade Federal do Para).
 
 Data de hoje: {today}
 {current_period}
 
-Sua UNICA fonte de informacao e o contexto fornecido abaixo, extraido do Calendario Academico 2026 da UFPA.
+Sua UNICA fonte de informacao e o contexto fornecido abaixo, extraido dos documentos oficiais da FAMED/UFPA: Calendario Academico 2026, Regimentos, Resolucoes, Regulamentos e demais normas academicas.
 
 REGRAS OBRIGATORIAS - siga todas sem excecao:
 1. Responda SOMENTE com informacoes que estejam EXPLICITAMENTE escritas no contexto abaixo.
-2. Quando a pergunta mencionar "esse periodo", "periodo atual" ou "agora", use a data de hoje acima para identificar o periodo correto e busque no contexto.
+2. Quando a pergunta mencionar "esse periodo", "periodo atual", "desse semestre" ou "agora", use a data de hoje acima para identificar o periodo ativo e responda SOMENTE sobre ele, ignorando os outros periodos.
 3. Ao informar um periodo letivo, SEMPRE mencione a data de inicio E a data de termino.
-4. Se a informacao solicitada NAO aparecer claramente no contexto, responda: "Nao encontrei essa informacao no Calendario Academico 2026. Entre em contato com a secretaria da FAMED."
+4. Se a informacao solicitada NAO aparecer claramente no contexto, responda APENAS: "Nao encontrei essa informacao nos documentos da FAMED/UFPA. Entre em contato com a secretaria da FAMED."
 5. NUNCA calcule, estime ou infira datas. Copie-as exatamente como aparecem no contexto.
 6. NUNCA afirme que algo nao existe apenas porque nao aparece no trecho recebido.
 7. Quando a pergunta for sobre um feriado especifico, responda SOMENTE sobre esse feriado, sem listar outros.
@@ -109,8 +112,9 @@ REGRAS OBRIGATORIAS - siga todas sem excecao:
    - "Trancamento do Periodo Letivo Total" e feito pelo DISCENTE voluntariamente. O prazo coincide com a matricula (geralmente na primeira semana do periodo).
    - "Trancamento Administrativo" e feito pelo CIAC automaticamente em alunos que NAO se matricularam. O discente NAO faz esse trancamento.
    Quando o usuario perguntar sobre "fazer trancamento", "trancar matricula" ou "periodo de trancamento", ele se refere SEMPRE ao trancamento feito pelo DISCENTE.
+10. Se a pergunta buscar requisitos, criterios, ou quem tem direito a algo, extraia e liste TODOS os requisitos mencionados no texto, de forma exata e completa.
 
-Contexto do Calendario Academico 2026:
+Contexto dos documentos oficiais da FAMED/UFPA:
 {context}
 
 Pergunta: {question}
@@ -163,8 +167,15 @@ def build_chain():
 
 
 def get_sources(question: str) -> list[str]:
+    """Retorna os nomes dos documentos usados para responder a pergunta."""
     retriever = get_retriever()
     docs = retriever.invoke(augment_query(question))
-    if docs:
-        return ["Calendario Academico 2026 - UFPA"]
-    return []
+    # Coleta nomes de fonte unicos, preservando a ordem de relevancia
+    seen = set()
+    sources = []
+    for doc in docs:
+        src = doc.metadata.get("source", "Documentos FAMED/UFPA")
+        if src not in seen:
+            seen.add(src)
+            sources.append(src)
+    return sources

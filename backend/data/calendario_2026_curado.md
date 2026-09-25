@@ -84,17 +84,21 @@ A homologação da oferta de turmas para o período 2026.2 ocorre até 06 de mar
 A homologação da oferta de turmas para o período 2026.3 ocorre até 08 de junho de 2026.
 A homologação da oferta de turmas para o período 2026.4 ocorre até 31 de julho de 2026.
 
-### Matrícula (responsável: Discente)
-A matrícula dos discentes para o período 2026.1 ocorre de 01 a 05 de dezembro de 2025.
-A matrícula dos discentes para o período 2026.2 ocorre de 07 a 11 de março de 2026.
-A matrícula dos discentes para o período 2026.3 ocorre de 09 a 12 de junho de 2026.
-A matrícula dos discentes para o período 2026.4 ocorre de 03 a 07 de agosto de 2026.
+### Matrícula e Confirmação de Matrícula (responsável: Discente)
+**Qual é a data limite para a confirmação de matrícula dos calouros e veteranos no período 2026.2? Qual o período de matrícula?**
+Datas e prazos de matrícula dos discentes (veteranos e calouros/ingressantes) para cada período em 2026:
+- Período 2026.1: de 01 a 05 de dezembro de 2025.
+- Período 2026.2: de 07 a 11 de março de 2026 (data limite: 11 de março de 2026).
+- Período 2026.3: de 09 a 12 de junho de 2026 (data limite: 12 de junho de 2026).
+- Período 2026.4: de 03 a 07 de agosto de 2026 (data limite: 07 de agosto de 2026).
 
 ### Trancamento do Período Letivo Total (responsável: Discente)
-O prazo para solicitação de trancamento total do período 2026.1 é de 01 a 05 de dezembro de 2025.
-O prazo para solicitação de trancamento total do período 2026.2 é de 07 a 11 de março de 2026.
-O prazo para solicitação de trancamento total do período 2026.3 é de 09 a 12 de junho de 2026.
-O prazo para solicitação de trancamento total do período 2026.4 é de 03 a 07 de agosto de 2026.
+**Até quando eu posso solicitar o trancamento total do período letivo no semestre atual? Qual o período de trancamento para esse semestre?**
+O prazo para o discente solicitar trancamento total do período letivo em cada semestre de 2026:
+- Período 2026.1: de 01 a 05 de dezembro de 2025.
+- Período 2026.2: de 07 a 11 de março de 2026 (prazo limite: 11 de março de 2026).
+- Período 2026.3: de 09 a 12 de junho de 2026 (prazo limite: 12 de junho de 2026).
+- Período 2026.4: de 03 a 07 de agosto de 2026 (prazo limite: 07 de agosto de 2026).
 
 ### Processamento da Matrícula (responsável: CTIC)
 O processamento da matrícula para o período 2026.1 ocorre nos dias 09 e 10 de dezembro de 2025.

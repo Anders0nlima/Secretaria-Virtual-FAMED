@@ -1,4 +1,4 @@
-﻿"""
+"""
 Gerencia o banco vetorial ChromaDB:
 - Indexação: processa o PDF e persiste os vetores em disco.
 - Busca: carrega o banco existente e retorna um retriever.
@@ -12,11 +12,27 @@ from app.rag.loader import load_and_split
 
 def index_documents() -> Chroma:
     """
-    Cria (ou recria) o banco vetorial a partir do PDF.
-    Deve ser chamado manualmente via script quando o documento for atualizado.
+    Cria (ou recria) o banco vetorial a partir dos documentos curados.
+    Deve ser chamado manualmente via script quando os documentos forem atualizados.
     """
+    import shutil
     embeddings = get_embeddings()
     chunks = load_and_split(settings.absolute_pdf_path)
+
+    chroma_dir = settings.absolute_chroma_path
+    if chroma_dir.exists():
+        try:
+            shutil.rmtree(str(chroma_dir))
+            print(f"[VectorStore] Banco anterior removido em {chroma_dir}")
+        except Exception as e:
+            print(f"[VectorStore] Aviso ao limpar banco anterior: {e}")
+    import chromadb
+    client = chromadb.PersistentClient(path=str(settings.absolute_chroma_path))
+    try:
+        client.delete_collection(settings.chroma_collection)
+        print(f"[VectorStore] Coleção '{settings.chroma_collection}' anterior removida.")
+    except Exception as e:
+        print(f"[VectorStore] Aviso ao remover coleção: {e}")
 
     print(f"[VectorStore] Indexando {len(chunks)} chunks em {settings.absolute_chroma_path} ...")
     vectorstore = Chroma.from_documents(
