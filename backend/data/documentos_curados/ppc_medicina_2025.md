@@ -66,11 +66,19 @@ A matriz do 1º ao 8º semestre organiza-se em 4 eixos longitudinais integrados:
 3. Habilidades Médicas: treinamento prático e simulação realística progressiva.
 4. Formação Científica (FC): metodologia científica, bioestatística, MBE e TCC.
 
-### LIBRAS e Inovações Curriculares (Componentes Obrigatórios)
-**A matéria de Libras (Língua Brasileira de Sinais) é obrigatória ou optativa?**
+### LIBRAS — Obrigatoriedade para Veteranos e Calouros
+**Sou aluno que entrou em 2022. Eu sou obrigado a fazer a disciplina de LIBRAS?**
+Não. O aluno que ingressou em 2022 é veterano e NÃO é obrigado a cursar a disciplina de LIBRAS. Para quem entrou até 2024 (currículo anterior ao PPC 2025), LIBRAS é uma disciplina optativa.
+
+**A matéria de Libras (Língua Brasileira de Sinais) é obrigatória ou optativa na FAMED?**
+A obrigatoriedade depende do ano de ingresso:
+- Alunos que ingressaram até 2024 (veteranos, como turmas de 2021, 2022, 2023 e 2024): NÃO são obrigados a fazer LIBRAS; para eles a disciplina é optativa.
+- Alunos que ingressaram a partir de 2025 (calouros do novo PPC 2025): LIBRAS é uma disciplina obrigatória.
+
+### Inovações Curriculares do PPC 2025
 **Quais disciplinas tornaram-se obrigatórias e quais são as inovações curriculares do PPC 2025?**
-O PPC 2025 introduziu inovações curriculares significativas:
-- LIBRAS (Língua Brasileira de Sinais): A obrigatoriedade depende do ano de ingresso. LIBRAS é obrigatória para calouros (ingressantes a partir de 2025). Para veteranos (ingressantes até 2024), LIBRAS continua sendo uma disciplina optativa.
+O PPC 2025 introduziu inovações curriculares significativas para os calouros (ingressantes a partir de 2025):
+- LIBRAS (Língua Brasileira de Sinais): passou de optativa para disciplina obrigatória (somente PPC 2025).
 - Saúde e Espiritualidade: passou de optativa para componente curricular obrigatório.
 - Saúde Indígena: novo componente obrigatório com foco nas populações originárias da Amazônia.
 - Fundamentos da Imunologia: criado como disciplina protegida na matriz curricular.

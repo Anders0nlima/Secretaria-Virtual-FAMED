@@ -16,8 +16,12 @@ O TCC pode ser apresentado em dois formatos oficiais:
 2. Artigo científico aceito ou publicado nos últimos quatro anos em periódicos classificados como Qualis A ou B (considerando a data de defesa no 12º semestre). Não são aceitos capítulos de livro como equivalente a artigo.
 
 ### Sobre Revisões Narrativas e Outros Formatos de TCC
-**Revisões narrativas são permitidas no TCC de Medicina da FAMED?**
-O regulamento de TCC da FAMED/UFPA não proíbe nem autoriza explicitamente revisões narrativas como formato isolado de TCC. Os dois formatos oficiais aceitos são: Monografia tradicional e Artigo científico Qualis A ou B. Para dúvidas sobre a aceitação de formatos específicos (como revisão narrativa, relato de caso, meta-análise), consulte diretamente a Coordenação de TCC do LAEPE antes de iniciar o projeto.
+**Revisão narrativa pura é aceita como formato de TCC na FAMED? Revisões narrativas são permitidas no TCC de Medicina da FAMED?**
+Não. Segundo as diretrizes do LAEPE e as normas da FAMED, revisões narrativas puras (isoladas) NÃO são aceitas como formato de TCC.
+Os formatos e tipos de estudos aceitos são:
+1. Monografia tradicional (estudos originais clínicos ou experimentais, relatos de casos acompanhados e revisões sistemáticas).
+2. Artigo científico Qualis A ou B publicado nos últimos 4 anos.
+Revisão integrativa só é aceita se incluir metodologia sistemática. Capítulos de livros, relatórios e revisões puramente narrativas não são permitidos.
 
 ### Como o Aluno Solicita e se Inscreve no TCC
 Para solicitar e realizar a inscrição do TCC:
@@ -28,8 +32,11 @@ Para solicitar e realizar a inscrição do TCC:
 5. É permitida a autoria de até dois discentes por TCC, desde que sejam obrigatoriamente do mesmo semestre no ato da inscrição.
 
 ### Autoria e TCC em Dupla
+**É permitido fazer o TCC em dupla com um colega de outro semestre?**
+Não. Embora o regulamento permita TCC com até dois discentes (em dupla), a condição obrigatória é que ambos estejam no mesmo semestre no ato da inscrição. Portanto, não é permitido fazer TCC em dupla com colegas de semestres diferentes.
+
 **É permitido fazer o Trabalho de Conclusão de Curso (TCC) em dupla na FAMED? Quais são as condições?**
-Sim. Segundo o regulamento, é permitida a autoria de até dois discentes (em dupla) por TCC. A condição exigida é que ambos os discentes sejam obrigatoriamente do mesmo semestre no ato da inscrição do trabalho no SAGITTA/LAEPE.
+É permitida a autoria de até dois discentes (em dupla) por TCC, desde que ambos sejam obrigatoriamente do mesmo semestre no ato da inscrição do trabalho no SAGITTA/LAEPE. Duplas de semestres diferentes não são permitidas.
 
 ---
 

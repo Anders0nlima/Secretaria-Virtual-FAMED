@@ -32,6 +32,7 @@ Use a tabela do PPC ao qual você está vinculado (ingressantes até 2024 = PPC 
 
 ## SAGITTA — Sistema de Atendimento ao Usuário
 
+### Acessando o SAGITTA
 **O que é o SAGITTA e como acessar?**
 O SAGITTA é o sistema da UFPA para atendimento digital. É por ele que o aluno abre todos os requerimentos e solicitações à secretaria da FAMED (declarações, documentos, aproveitamento de estudos etc.).
 URL de acesso: https://sagitta.ufpa.br/sagitta/
@@ -39,24 +40,30 @@ Login direto: https://sagitta.ufpa.br/sagitta/login.jsf
 Login: as mesmas credenciais do SIGAA.
 Manual do usuário (PDF): https://sagitta.ufpa.br/sagitta/documentos/manual_sagitta.pdf
 
-**Qual é o passo a passo para abrir uma chamada no SAGITTA?**
-1. Acesse o SAGITTA e entre com usuário e senha do SIGAA.
-2. Escolha o serviço que corresponde à sua necessidade no catálogo da Faculdade de Medicina.
+### Passo a Passo para Abrir uma Chamada no SAGITTA
+**Qual é o passo a passo completo para abrir um chamado na secretaria da FAMED pelo SAGITTA?**
+1. Acesse o SAGITTA (https://sagitta.ufpa.br/sagitta/) e entre com usuário e senha do SIGAA.
+2. No catálogo de serviços, selecione a unidade "Faculdade de Medicina" e escolha o serviço correspondente à sua necessidade.
 3. Preencha o formulário: telefone atualizado (obrigatório) e descrição detalhada do pedido (obrigatório).
-4. Anexe os comprovantes exigidos e aguarde o upload terminar antes de clicar em Criar Chamada.
-5. Acompanhe pelo próprio SAGITTA e pelo e-mail institucional.
+4. Anexe os comprovantes exigidos e aguarde o upload terminar antes de clicar em "Criar Chamada".
+5. Acompanhe o andamento pelo próprio SAGITTA e pelo e-mail institucional.
 6. Enquanto a chamada estiver com situação "Nova", você pode cancelá-la no próprio sistema.
-Atenção: se não encontrar o serviço no catálogo, entre em contato com a secretaria da FAMED.
+Atenção: se não encontrar o serviço no catálogo, entre em contato diretamente com a secretaria da FAMED.
 
 ---
 
 ## SIGAA — Matrícula e Trancamento de Curso
 
 ### Matrícula em Disciplinas no SIGAA
-**O que é o SIGAA e como fazer matrícula em disciplinas?**
-O SIGAA (https://sigaa.ufpa.br) é o sistema para matrícula em turmas, trancamento, notas, faltas, histórico escolar e atestado de matrícula.
-Passo a passo para matrícula: entre no SIGAA, abra o módulo de matrícula, selecione as turmas ofertadas, confira título e professor, e clique em Confirmar Matrículas. Se o sistema estiver instável, tente em outro horário, sempre antes do último dia do período de matrícula.
-A primeira matrícula do calouro é feita pela coordenação; nas seguintes, o aluno seleciona as turmas no SIGAA.
+**Qual o passo a passo para se matricular nas matérias (disciplinas) pelo SIGAA?**
+O SIGAA (https://sigaa.ufpa.br) é o sistema para matrícula em turmas, notas, faltas, histórico escolar e atestado de matrícula.
+Passo a passo completo para matrícula em disciplinas pelo SIGAA:
+1. Acesse o SIGAA (https://sigaa.ufpa.br) com seu login e senha.
+2. No menu, acesse o módulo de Matrícula.
+3. Selecione as turmas ofertadas que deseja cursar, conferindo título e professor.
+4. Clique em "Confirmar Matrículas" e salve o comprovante.
+Se o sistema estiver instável, tente em outro horário, sempre antes do último dia do período de matrícula.
+A primeira matrícula do calouro é feita pela coordenação; nas semestres seguintes, o próprio aluno faz a matrícula no SIGAA.
 
 ### Como Fazer Trancamento de Matrícula no SIGAA
 **Como fazer trancamento de matrícula? Como trancar o período letivo ou fazer trancamento total do curso?**
@@ -96,9 +103,11 @@ Regras importantes do trancamento:
 A Comissão de Aproveitamento de Estudos da FAMED analisa disciplinas cursadas em outras instituições.
 Página da comissão: https://www.faculdademedicina.ufpa.br/index.php/aproveitamento-de-estudos [Verificado]
 Regimento (Resolução 01/2024): https://drive.google.com/file/d/1-0WUB4DAkVLxFaXplnZrLp9J_2nsVcAF/view?usp=sharing
-Prazos: as solicitações são recebidas até o 20º dia do início do semestre letivo. A primeira análise leva até 15 dias úteis e recursos até 20 dias úteis.
 O resultado é despachado via SIPAC com justificativa em caso de indeferimento. O aluno pode pedir reavaliação uma única vez.
 Atenção: o formulário de aproveitamento de estudos deve ser obtido no SAGITTA ou confirmado com a secretaria da FAMED.
+
+**Qual é o prazo para solicitar aproveitamento de estudos ou dispensa de disciplinas cursadas em outra faculdade?**
+O prazo para protocolar o pedido de aproveitamento de estudos na FAMED é de até o 20º dia do início do semestre letivo, contado a partir do primeiro dia do semestre no Calendário Acadêmico da UFPA. Pedidos entregues fora desse prazo são analisados somente no semestre seguinte. A primeira análise leva até 15 dias úteis e os recursos até 20 dias úteis.
 
 ---
 
@@ -114,11 +123,13 @@ Reuniões de dúvidas com o coordenador do LAEPE: quintas-feiras, 15h–18h, age
 Manual do TCC (Google Drive): https://drive.google.com/file/d/1lLJ05pTjVbL7GJwmV0u2F4TOd0BdEcrL/view?usp=sharing
 Página de manuais da FAMED: https://www.faculdademedicina.ufpa.br/index.php/manuais-1 [Verificado]
 
-**Quais tipos de trabalho são aceitos como TCC na FAMED?**
-Tipos aceitos: estudos clínicos observacionais ou de intervenção, ciência básica (modelos celulares/animais), relato ou série de casos (acompanhados pelo aluno/orientador), revisão sistemática (meta-análise opcional).
-Tipos NÃO aceitos: revisões narrativas isoladas, capítulo de livro, relatório, cartilhas.
-Revisão integrativa só é aceita se incluir revisão sistemática.
-Formatos de entrega: monografia ou artigo científico publicado em revista Qualis A ou B.
+### Tipos de Estudos Aceitos e Proibidos no TCC
+**Quais tipos de trabalho são aceitos como TCC na FAMED? Revisão narrativa pura é aceita como formato de TCC na FAMED?**
+Não, revisão narrativa pura (isolada) NÃO é aceita como formato de TCC na FAMED.
+- Tipos aceitos pelo LAEPE: estudos clínicos observacionais ou de intervenção, ciência básica (modelos celulares/animais), relato ou série de casos (desde que acompanhados pelo aluno/orientador), revisão sistemática (com meta-análise opcional).
+- Tipos expressamente NÃO aceitos: revisões narrativas isoladas (puras), capítulos de livro, relatórios e cartilhas.
+- Revisão integrativa só é aceita se for conduzida com metodologia de revisão sistemática.
+- Formatos oficiais de entrega: Monografia tradicional ou Artigo científico publicado em periódico Qualis A ou B.
 
 **Como buscar TCCs anteriores defendidos na FAMED?**
 Acesse: https://www.faculdademedicina.ufpa.br/index.php/busca-de-trabalhos-de-conclusao-de-curso [Menu oficial]
@@ -128,7 +139,8 @@ Para verificar Qualis de periódicos: https://sucupira.capes.gov.br/sucupira/pub
 
 ## Ética em Pesquisa
 
-**Como submeter um projeto de pesquisa com seres humanos ao Comitê de Ética (CEP)?**
+**Como submeter um projeto de pesquisa com seres humanos ao Comitê de Ética (CEP)? Meu TCC é um estudo clínico com pacientes, onde submeto ao CEP?**
+Projetos com seres humanos (estudos clínicos, observacionais, com entrevistas, dados de prontuário, etc.) precisam de aprovação do CEP antes de iniciar a coleta.
 A submissão é 100% online pela Plataforma Brasil (http://aplicacao.saude.gov.br/plataformabrasil/login.jsf). Não se entrega projeto impresso no CEP.
 CEP do Instituto de Ciências da Saúde (CEP-ICS/UFPA):
 - Página principal: https://www.ics.ufpa.br/index.php/comite-de-etica/97-comite-de-etica-em-pesquisa
