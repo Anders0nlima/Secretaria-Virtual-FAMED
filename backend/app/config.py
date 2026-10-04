@@ -1,4 +1,4 @@
-﻿from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from pathlib import Path
 
 # Diretório raiz do backend (um nível acima de app/)
@@ -28,6 +28,11 @@ class Settings(BaseSettings):
 
     # Retriever
     retriever_k: int = 4
+
+    # Google Calendar
+    google_calendar_id: str = "primary"
+    google_credentials_path: str = "credentials/secretaria-virtual-famed-60fadc63eb4f.json"
+    google_calendar_days_ahead: int = 14
 
     @property
     def absolute_pdf_path(self) -> Path:

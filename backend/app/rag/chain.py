@@ -9,6 +9,8 @@ from langchain_core.runnables import RunnablePassthrough, RunnableLambda
 from langchain_core.output_parsers import StrOutputParser
 from app.config import settings
 from app.rag.vectorstore import get_retriever
+from app.rag.intent import is_calendar_query
+from app.integrations.google_calendar import get_calendar_context
 
 
 # ---------------------------------------------------------------------------
@@ -113,6 +115,7 @@ REGRAS OBRIGATORIAS - siga todas sem excecao:
    - "Trancamento Administrativo" e feito pelo CIAC automaticamente em alunos que NAO se matricularam. O discente NAO faz esse trancamento.
    Quando o usuario perguntar sobre "fazer trancamento", "trancar matricula" ou "periodo de trancamento", ele se refere SEMPRE ao trancamento feito pelo DISCENTE.
 10. Se a pergunta buscar requisitos, criterios, ou quem tem direito a algo, extraia e liste TODOS os requisitos mencionados no texto, de forma exata e completa.
+11. Se houver informacoes da Agenda Institucional (Google Agenda) no contexto sobre eventos, reunioes ou atendimentos marcados, use-as com prioridade para responder sobre datas e horarios agendados.
 
 Contexto dos documentos oficiais da FAMED/UFPA:
 {context}
@@ -137,6 +140,23 @@ def format_docs(docs: list) -> str:
     return "\n\n---\n\n".join(doc.page_content for doc in docs)
 
 
+def get_full_context(question: str) -> str:
+    """
+    Combina os chunks do ChromaDB e, caso a pergunta envolva eventos/agenda,
+    injeta os agendamentos em tempo real do Google Calendar.
+    """
+    retriever = get_retriever()
+    augmented_q = augment_query(question)
+    docs = retriever.invoke(augmented_q)
+    rag_context = format_docs(docs)
+
+    if is_calendar_query(question):
+        cal_context = get_calendar_context()
+        return f"{rag_context}\n\n---\n\n{cal_context}"
+
+    return rag_context
+
+
 def build_chain():
     """
     Monta a RAG chain com Query Augmentation.
@@ -153,7 +173,7 @@ def build_chain():
     chain = (
         {
             # Busca com a query enriquecida (tem periodo atual se necessario)
-            "context": augment | retriever | format_docs,
+            "context": RunnableLambda(get_full_context),
             # Pergunta original (sem alteracao) e enviada ao LLM
             "question": RunnablePassthrough(),
             "today": RunnableLambda(get_dynamic_today),
@@ -178,4 +198,9 @@ def get_sources(question: str) -> list[str]:
         if src not in seen:
             seen.add(src)
             sources.append(src)
+    if is_calendar_query(question):
+        cal_source = "Agenda Institucional da FAMED/UFPA (Google Agenda)"
+        if cal_source not in seen:
+            sources.append(cal_source)
+
     return sources

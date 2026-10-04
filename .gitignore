@@ -36,3 +36,21 @@ dist-ssr/
 # =========================
 .DS_Store
 Thumbs.db
+
+# Credenciais e chaves de APIs (Google Service Account, OAuth, etc.)
+credentials/
+backend/credentials/
+*.json.secret
+*serviceaccount*.json
+*service-account*.json
+
+# Logs e arquivos de depuração
+*.log
+
+# Scripts temporários de correção e testes pontuais da raiz do backend
+backend/fix_*.py
+backend/patch_*.py
+backend/test_*.py
+backend/apply_*.py
+backend/debug_*.py
+backend/list_*.py
