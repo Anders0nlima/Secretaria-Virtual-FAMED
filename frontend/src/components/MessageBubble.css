@@ -1,6 +1,6 @@
-﻿.bubble-wrapper {
+.bubble-wrapper {
   display: flex;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.65rem;
 }
 
 .bubble-wrapper--user {
@@ -12,8 +12,8 @@
 }
 
 .bubble {
-  max-width: 80%;
-  padding: 0.6rem 0.9rem;
+  max-width: 82%;
+  padding: 0.7rem 0.95rem;
   border-radius: 12px;
   font-size: 0.88rem;
   line-height: 1.5;
@@ -21,36 +21,40 @@
 }
 
 .bubble--user {
-  background-color: #003366;
-  color: white;
+  background-color: #005a2b;
+  color: #ffffff;
   border-bottom-right-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0, 90, 43, 0.2);
 }
 
 .bubble--assistant {
-  background-color: #f0f0f0;
-  color: #222;
+  background-color: #f0f4f1;
+  color: #1e2621;
+  border: 1px solid #e1e9e3;
   border-bottom-left-radius: 3px;
 }
 
-/* Fontes */
+/* Fontes consultadas */
 .bubble-sources {
-  margin-top: 0.5rem;
-  padding-top: 0.4rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  font-size: 0.75rem;
-  color: #666;
+  margin-top: 0.55rem;
+  padding-top: 0.45rem;
+  border-top: 1px solid rgba(0, 90, 43, 0.15);
+  font-size: 0.74rem;
+  color: #486150;
 }
 
 .bubble-sources-label {
-  font-weight: 600;
-  margin-right: 0.25rem;
+  font-weight: 700;
+  margin-right: 0.3rem;
+  color: #005a2b;
 }
 
 .bubble-sources ul {
-  margin: 0.15rem 0 0 1rem;
+  margin: 0.25rem 0 0 1.1rem;
   padding: 0;
 }
 
 .bubble-sources li {
   list-style: disc;
+  margin-bottom: 2px;
 }

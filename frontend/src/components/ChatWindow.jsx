@@ -3,12 +3,12 @@ import MessageBubble from './MessageBubble.jsx'
 import ChatInput from './ChatInput.jsx'
 import './ChatWindow.css'
 
-const API_URL = 'http://localhost:8000/chat'
+const API_URL = `http://${window.location.hostname}:8000/chat`
 
 const WELCOME_MESSAGE = {
   role: 'assistant',
   content:
-    'Ola! Sou a Secretaria Virtual da FAMED/UFPA. Posso responder perguntas sobre o Calendario Academico 2026. Como posso ajudar?',
+    'Olá! Sou a Secretaria Virtual da FAMED/UFPA. Posso ajudar com dúvidas sobre o Calendário Acadêmico 2026, normas da faculdade, resoluções, TCC, formulários e agendamentos institucionais. Como posso ajudar você hoje?',
   sources: [],
 }
 
@@ -50,7 +50,7 @@ export default function ChatWindow({ onClose }) {
         {
           role: 'assistant',
           content:
-            'Desculpe, ocorreu um erro ao processar sua pergunta. Por favor, tente novamente mais tarde.',
+            'Desculpe, ocorreu um erro ao processar sua pergunta. Por favor, verifique se o servidor local está ativo e tente novamente.',
           sources: [],
         },
       ])
@@ -61,21 +61,46 @@ export default function ChatWindow({ onClose }) {
   }
 
   return (
-    <div className="chat-window" role="dialog" aria-label="Secretaria Virtual FAMED">
+    <div className="chat-window" role="dialog" aria-label="Secretaria Virtual FAMED/UFPA">
       <div className="chat-window-header">
+        {/* Botão de retorno visível em smartphones */}
+        <button
+          className="chat-window-back-btn"
+          onClick={onClose}
+          aria-label="Voltar para o site da FAMED"
+          title="Voltar ao portal da FAMED"
+        >
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          <span className="chat-window-back-text">Voltar</span>
+        </button>
+
         <div className="chat-window-header-info">
-          <span className="chat-window-avatar">&#127891;</span>
+          <div className="chat-window-badge-icon" aria-hidden="true">
+            {/* Ícone médico vetorial */}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 2v20" />
+              <path d="M7 6c2-1 4-1 6 0 2 1 2 3 0 4-3 1.5-3 3.5 0 5 2 1 2 3 0 4-2 1-4 1-6 0" />
+            </svg>
+          </div>
           <div>
             <p className="chat-window-title">Secretaria Virtual</p>
-            <p className="chat-window-subtitle">FAMED/UFPA</p>
+            <p className="chat-window-subtitle">FACULDADE DE MEDICINA · UFPA</p>
           </div>
         </div>
+
+        {/* Botão fechar (X) */}
         <button
           className="chat-window-close"
           onClick={onClose}
           aria-label="Fechar chat"
+          title="Fechar"
         >
-          &#x2715;
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
         </button>
       </div>
 
