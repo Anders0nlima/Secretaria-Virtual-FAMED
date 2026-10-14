@@ -2,6 +2,7 @@
 Monta a RAG chain: retriever + prompt endurecido + LLM via Ollama.
 Inclui Query Augmentation para melhorar a busca vetorial.
 """
+import re
 from datetime import date
 from langchain_ollama import OllamaLLM
 from langchain_core.prompts import PromptTemplate
@@ -62,6 +63,14 @@ TEMPORAL_KEYWORDS = [
     "nesse semestre", "neste semestre"
 ]
 
+def sanitize_question(q: str) -> str:
+    """Corrige discordâncias gramaticais comuns em perguntas sobre docentes."""
+    if not q:
+        return q
+    q = re.sub(r"\bda\s+professor\b", "do professor", q, flags=re.IGNORECASE)
+    q = re.sub(r"\bdo\s+professora\b", "da professora", q, flags=re.IGNORECASE)
+    return q
+
 def augment_query(question: str) -> str:
     """
     Injeta o periodo atual na query antes de buscar no ChromaDB.
@@ -116,6 +125,11 @@ REGRAS OBRIGATORIAS - siga todas sem excecao:
    Quando o usuario perguntar sobre "fazer trancamento", "trancar matricula" ou "periodo de trancamento", ele se refere SEMPRE ao trancamento feito pelo DISCENTE.
 10. Se a pergunta buscar requisitos, criterios, ou quem tem direito a algo, extraia e liste TODOS os requisitos mencionados no texto, de forma exata e completa.
 11. Se houver informacoes da Agenda Institucional (Google Agenda) no contexto sobre eventos, reunioes ou atendimentos marcados, use-as com prioridade para responder sobre datas e horarios agendados.
+12. Ao responder sobre a Agenda Institucional (Google Agenda):
+    - Use SEMPRE a "Data de hoje" informada no contexto para identificar as atividades de hoje e de dias futuros. Nunca confunda datas futuras com hoje.
+    - Se a pergunta for sobre um dia ou data especifica (ex: "hoje", "amanha" ou "14/10"), liste APENAS as atividades referentes a data solicitada.
+    - Ao buscar por um professor ou docente, localize a linha onde o NOME COMPLETO OU SOBRENOME do professor aparece explicitamente (por exemplo, "Lucas Lobato" deve corresponder estritamente a linha que contem "Lucas Lobato"). NUNCA atribua a sala ou horario de outro docente.
+    - Informe com clareza o horario de inicio e termino, a sala ou local, e o nome da atividade ou docente responsavel.
 
 Contexto dos documentos oficiais da FAMED/UFPA:
 {context}
@@ -133,6 +147,7 @@ llm = OllamaLLM(
     model=settings.ollama_model,
     base_url=settings.ollama_base_url,
     temperature=0.0,
+    num_ctx=8192,
 )
 
 
@@ -143,16 +158,19 @@ def format_docs(docs: list) -> str:
 def get_full_context(question: str) -> str:
     """
     Combina os chunks do ChromaDB e, caso a pergunta envolva eventos/agenda,
-    injeta os agendamentos em tempo real do Google Calendar.
+    injeta os agendamentos em tempo real do Google Calendar no início do contexto,
+    filtrando dinamicamente as entidades mencionadas na pergunta.
     """
     retriever = get_retriever()
-    augmented_q = augment_query(question)
+    sanitized_q = sanitize_question(question)
+    augmented_q = augment_query(sanitized_q)
     docs = retriever.invoke(augmented_q)
     rag_context = format_docs(docs)
 
-    if is_calendar_query(question):
-        cal_context = get_calendar_context()
-        return f"{rag_context}\n\n---\n\n{cal_context}"
+    if is_calendar_query(sanitized_q):
+        cal_context = get_calendar_context(query=sanitized_q)
+        # Injeta a agenda no topo para máxima atenção e relevância temporal
+        return f"{cal_context}\n\n---\n\n{rag_context}"
 
     return rag_context
 
@@ -167,15 +185,12 @@ def build_chain():
     3. Prompt: formata contexto + data + regras + pergunta original
     4. LLM: gera a resposta
     """
-    retriever = get_retriever()
-    augment = RunnableLambda(augment_query)
-
     chain = (
         {
             # Busca com a query enriquecida (tem periodo atual se necessario)
             "context": RunnableLambda(get_full_context),
-            # Pergunta original (sem alteracao) e enviada ao LLM
-            "question": RunnablePassthrough(),
+            # Pergunta original higienizada enviada ao LLM
+            "question": RunnableLambda(sanitize_question),
             "today": RunnableLambda(get_dynamic_today),
             "current_period": RunnableLambda(get_dynamic_period),
         }
@@ -189,8 +204,8 @@ def build_chain():
 def get_sources(question: str) -> list[str]:
     """Retorna os nomes dos documentos usados para responder a pergunta."""
     retriever = get_retriever()
-    docs = retriever.invoke(augment_query(question))
-    # Coleta nomes de fonte unicos, preservando a ordem de relevancia
+    sanitized_q = sanitize_question(question)
+    docs = retriever.invoke(augment_query(sanitized_q))
     seen = set()
     sources = []
     for doc in docs:
@@ -198,7 +213,7 @@ def get_sources(question: str) -> list[str]:
         if src not in seen:
             seen.add(src)
             sources.append(src)
-    if is_calendar_query(question):
+    if is_calendar_query(sanitized_q):
         cal_source = "Agenda Institucional da FAMED/UFPA (Google Agenda)"
         if cal_source not in seen:
             sources.append(cal_source)

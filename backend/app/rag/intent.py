@@ -14,7 +14,7 @@ CALENDAR_PATTERNS = [
     r"\bmarcad[ao][s]?\b",
     r"\bprograma[cç][aã]o\b",
     r"\bcompromisso[s]?\b",
-    # Tipos de atividades praticas comuns na agenda da FAMED
+    # Tipos de atividades praticas / avaliativas na agenda da FAMED
     r"\bplant[aã]o\b",
     r"\bambulat[oó]rio\b",
     r"\bconfer[eê]ncia\b",
@@ -23,6 +23,9 @@ CALENDAR_PATTERNS = [
     r"\bsess[aã]o de tutoria\b",
     r"\bjornada acad[eê]mica\b",
     r"\best[aá]gio supervisionado\b",
+    r"\bosce\b",
+    r"\bprova pr[aá]tica\b",
+    r"\bsala de simula[cç][aã]o\b",
     # Referencia a datas especificas (formatos comuns: 05/10, 07.10, dia 5, dia 06 de outubro)
     r"\b\d{1,2}[/\.]\d{1,2}\b",
     r"\bdia \d{1,2}(?: de \w+)?\b",
@@ -31,9 +34,21 @@ CALENDAR_PATTERNS = [
     r"\bquando come[cç]a\b",
     r"\bquando termina\b",
     r"\bhor[aá]rio[s]? de atendimento\b",
-    # Perguntas sobre local de eventos
-    r"\bonde (vai )?(acontecer|ser realizado?|ocorrer)\b",
-    r"\blocal (do|da|de|exato)\b",
+    # Perguntas sobre localizacao de eventos/aulas/salas
+    r"\bonde (est[aá] sendo|[eé]|vai ser|fica|est[aá]|ser[aá]|ocorre|vai ocorrer|acontece|vai acontecer|vai ter|tem|tendo)\b",
+    r"\bonde\b.*?\b(aula|prof|professor|professora|prova|reuni[aã]o|evento)\b",
+    r"\b(qual|em qual|que|em que) sala\b",
+    r"\bsala\s+\d+\b",
+    r"\bsala (do|da|de|dos|das)\b",
+    r"\bno audit[oó]rio\b",
+    r"\bquem est[aá] usando\b",
+    # Aulas vinculadas a docentes ou datas imediatas
+    r"\baula d[eoa] (prof|professor|professora)\b",
+    r"\b(prof|professor|professora) .*\baula\b",
+    r"\baula[s]?\b.*?\b(hoje|amanh[aã])\b",
+    r"\b(hoje|amanh[aã])\b.*?\baula[s]?\b",
+    r"\b(o que|qual atividade|quais atividades)\b.*?\b(hoje|amanh[aã])\b",
+    r"\b(tem|vai ter|est[aá] tendo)\b.*?\b(hoje|amanh[aã])\b",
     # Perguntas sobre conteudo/material de eventos
     r"\bpreciso levar\b",
     r"\bo que (devo|preciso) levar\b",
