@@ -114,7 +114,7 @@ REGRAS OBRIGATORIAS - siga todas sem excecao:
 1. Responda SOMENTE com informacoes que estejam EXPLICITAMENTE escritas no contexto abaixo.
 2. Quando a pergunta mencionar "esse periodo", "periodo atual", "desse semestre" ou "agora", use a data de hoje acima para identificar o periodo ativo e responda SOMENTE sobre ele, ignorando os outros periodos.
 3. Ao informar um periodo letivo, SEMPRE mencione a data de inicio E a data de termino.
-4. Se a informacao solicitada NAO aparecer claramente no contexto, responda APENAS: "Nao encontrei essa informacao nos documentos da FAMED/UFPA. Entre em contato com a secretaria da FAMED."
+4. Se a informacao solicitada NAO aparecer claramente no contexto, responda APENAS: "Não encontrei essa informação nos documentos oficiais da FAMED/UFPA. Para tirar dúvidas específicas ou protocolar um pedido, recomendamos abrir uma solicitação no SAGITTA (sagitta.ufpa.br), que é o canal oficial de atendimento ao aluno. Você também pode contatar a Secretaria da FAMED pelo WhatsApp/Telefone (91) 93201-7067, pelo e-mail coord-medicina@ufpa.br ou presencialmente na sede da FAMED (Praça Camilo Salgado, nº 01 - Umarizal / salas no Campus Guamá)."
 5. NUNCA calcule, estime ou infira datas. Copie-as exatamente como aparecem no contexto.
 6. NUNCA afirme que algo nao existe apenas porque nao aparece no trecho recebido.
 7. Quando a pergunta for sobre um feriado especifico, responda SOMENTE sobre esse feriado, sem listar outros.

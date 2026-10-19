@@ -1,4 +1,4 @@
-﻿# =========================
+# =========================
 # Backend (Python / FastAPI)
 # =========================
 
@@ -57,3 +57,9 @@ backend/list_*.py
 backend/restore_*.py
 backend/setup_*.py
 backend/update_*.py
+
+# Dados de e-mail e relatórios intermediários (LGPD / Privacidade)
+backend/data/email_raw/
+*.mbox
+backend/data/emails_anonymized*
+backend/data/email_inventory_report*

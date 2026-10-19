@@ -13,7 +13,7 @@ CALENDAR_PATTERNS = [
     r"\breuni[oõ]es\b",
     r"\bmarcad[ao][s]?\b",
     r"\bprograma[cç][aã]o\b",
-    r"\bcompromisso[s]?\b",
+    r"(?<!termo de\s)\bcompromisso[s]?\b",
     # Tipos de atividades praticas / avaliativas na agenda da FAMED
     r"\bplant[aã]o\b",
     r"\bambulat[oó]rio\b",
@@ -83,6 +83,9 @@ def is_calendar_query(question: str) -> bool:
     reunioes, horarios de atendimento ou programacao da agenda.
     """
     if not question:
+        return False
+    # Exceções de documentos acadêmicos que contêm palavras como 'compromisso' ou 'estágio'
+    if re.search(r"\b(termo de compromisso|termo de est[aá]gio|tce|assinatura de termo)\b", question, re.IGNORECASE):
         return False
     for pattern in _COMPILED_PATTERNS:
         if pattern.search(question):

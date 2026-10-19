@@ -24,7 +24,7 @@ A gestão e localização da Faculdade de Medicina (FAMED/ICM/UFPA):
 - Diretor Titular da Faculdade de Medicina: Prof. Dr. Cezar Augusto Muniz Caldas.
 - Vice-Diretora da Faculdade de Medicina: Profa. Dra. Laura Maria Silva Araújo Ferreira.
 - Localização da Secretaria / Sede: Praça Camilo Salgado, nº 01, Bairro Umarizal, Belém - Pará, CEP: 66050-060. Há também unidades e salas no Campus Guamá.
-- Contatos: Telefone (91) 3201-6858 | E-mail: coord-medicina@ufpa.br | Atendimento: SAGITTA (sagitta.ufpa.br).
+- Contatos: Telefone / WhatsApp: (91) 93201-7067 | E-mail: coord-medicina@ufpa.br | Atendimento: SAGITTA (sagitta.ufpa.br).
 
 ### Atribuições do Diretor da FAMED
 Compete ao Diretor da Faculdade de Medicina:
@@ -36,7 +36,7 @@ Compete ao Diretor da Faculdade de Medicina:
 ### Endereço e Contatos da Secretaria da FAMED
 - Endereço da Sede Histórica: Praça Camilo Salgado, nº 01, Bairro Umarizal, Belém - Pará, CEP: 66050-060.
 - Campus Universitário: Unidades acadêmicas, laboratórios e salas também situadas no Campus Guamá da UFPA.
-- Telefone de Contato: (91) 3201-6858.
+- Telefone / WhatsApp de Contato: (91) 93201-7067.
 - E-mail institucional: coord-medicina@ufpa.br.
 - Sistema de Atendimento ao Aluno: SAGITTA (sagitta.ufpa.br).
 

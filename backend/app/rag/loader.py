@@ -28,9 +28,9 @@ CURATED_DOCS_DIR = DATA_DIR / "documentos_curados"
 HEADERS_TO_SPLIT = [("##", "secao"), ("###", "subsecao")]
 
 MD_SUB_SPLITTER = RecursiveCharacterTextSplitter(
-    chunk_size=800,
-    chunk_overlap=50,
-    separators=["\n", ". ", " "],
+    chunk_size=1200,
+    chunk_overlap=150,
+    separators=["\n\n", "\n", ". ", " "],
 )
 
 
@@ -85,13 +85,19 @@ def load_curated_markdowns() -> list:
             doc.metadata["arquivo"] = md_file.name
             doc.metadata["tipo"] = "documento_curado"
 
-            # Prefixa com o nome do documento para ancoragem semantica
-            doc.page_content = f"[Fonte: {source_title}]\n{doc.page_content}"
+            header_prefix = f"[Fonte: {source_title}]\n"
+            content_with_source = f"{header_prefix}{doc.page_content}"
 
-            if len(doc.page_content) > 800:
+            if len(content_with_source) > 1200:
+                doc.page_content = content_with_source
                 sub = MD_SUB_SPLITTER.split_documents([doc])
+                for s in sub:
+                    s.metadata = dict(doc.metadata)
+                    if not s.page_content.startswith("[Fonte:"):
+                        s.page_content = f"{header_prefix}{s.page_content}"
                 chunks_for_file.extend(sub)
             else:
+                doc.page_content = content_with_source
                 chunks_for_file.append(doc)
 
         print(f"  [OK] {md_file.name} -> {len(chunks_for_file)} chunks ({source_title})")
