@@ -2,16 +2,16 @@
 Monta a RAG chain: retriever + prompt endurecido + LLM via Ollama.
 Inclui Query Augmentation para melhorar a busca vetorial.
 """
-import re
 from datetime import date
-from langchain_ollama import OllamaLLM
-from langchain_core.prompts import PromptTemplate
-from langchain_core.runnables import RunnablePassthrough, RunnableLambda
+import re
 from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import PromptTemplate
+from langchain_core.runnables import RunnableLambda
+from langchain_ollama import OllamaLLM
 from app.config import settings
-from app.rag.vectorstore import get_retriever
-from app.rag.intent import is_calendar_query
 from app.integrations.google_calendar import get_calendar_context
+from app.rag.intent import is_calendar_query
+from app.rag.vectorstore import get_retriever
 
 
 # ---------------------------------------------------------------------------
@@ -74,11 +74,6 @@ def sanitize_question(q: str) -> str:
 def augment_query(question: str) -> str:
     """
     Injeta o periodo atual na query antes de buscar no ChromaDB.
-
-    Quando o usuario pergunta sobre 'esse periodo' ou 'periodo atual',
-    a busca vetorial nao sabe o que e 'atual'. Ao adicionar '2026.4'
-    na query, o ChromaDB passa a buscar chunks que contenham esse codigo,
-    trazendo os resultados corretos.
     """
     question_lower = question.lower()
     if any(kw in question_lower for kw in TEMPORAL_KEYWORDS):
@@ -114,7 +109,7 @@ REGRAS OBRIGATORIAS - siga todas sem excecao:
 1. Responda SOMENTE com informacoes que estejam EXPLICITAMENTE escritas no contexto abaixo.
 2. Quando a pergunta mencionar "esse periodo", "periodo atual", "desse semestre" ou "agora", use a data de hoje acima para identificar o periodo ativo e responda SOMENTE sobre ele, ignorando os outros periodos.
 3. Ao informar um periodo letivo, SEMPRE mencione a data de inicio E a data de termino.
-4. Se a informacao solicitada NAO aparecer claramente no contexto, responda APENAS: "Não encontrei essa informação nos documentos oficiais da FAMED/UFPA. Para tirar dúvidas específicas ou protocolar um pedido, recomendamos abrir uma solicitação no SAGITTA (sagitta.ufpa.br), que é o canal oficial de atendimento ao aluno. Você também pode contatar a Secretaria da FAMED pelo WhatsApp/Telefone (91) 93201-7067, pelo e-mail coord-medicina@ufpa.br ou presencialmente na sede da FAMED (Praça Camilo Salgado, nº 01 - Umarizal / salas no Campus Guamá)."
+4. Se a informacao solicitada NAO aparecer claramente no contexto, responda APENAS: "Não encontrei essa informação nos documentos oficiais da FAMED/UFPA. Para tirar dúvidas específicas ou protocolar um pedido, recomendamos abrir uma solicitação no SAGITTA (sagitta.ufpa.br), que é o canal oficial de atendimento ao aluno. Você também pode contatar a Secretaria da FAMED pelo telefone (91) 3201-7067, pelo e-mail coord-medicina@ufpa.br ou presencialmente na sede da FAMED (Praça Camilo Salgado, nº 01 - Umarizal / salas no Campus Guamá)."
 5. NUNCA calcule, estime ou infira datas. Copie-as exatamente como aparecem no contexto.
 6. NUNCA afirme que algo nao existe apenas porque nao aparece no trecho recebido.
 7. Quando a pergunta for sobre um feriado especifico, responda SOMENTE sobre esse feriado, sem listar outros.
@@ -130,6 +125,14 @@ REGRAS OBRIGATORIAS - siga todas sem excecao:
     - Se a pergunta for sobre um dia ou data especifica (ex: "hoje", "amanha" ou "14/10"), liste APENAS as atividades referentes a data solicitada.
     - Ao buscar por um professor ou docente, localize a linha onde o NOME COMPLETO OU SOBRENOME do professor aparece explicitamente (por exemplo, "Lucas Lobato" deve corresponder estritamente a linha que contem "Lucas Lobato"). NUNCA atribua a sala ou horario de outro docente.
     - Informe com clareza o horario de inicio e termino, a sala ou local, e o nome da atividade ou docente responsavel.
+13. FORMATAÇÃO E ESTRUTURA VISUAL:
+    - Utilize Markdown claro e bem organizado.
+    - Quando listar múltiplos itens, documentos, etapas ou prazos, SEMPRE use tópicos em linhas separadas começando com '- ' ou números (ex:
+      - Item A
+      - Item B).
+      NUNCA junte tópicos na mesma linha (ex: 'item1-item2').
+    - Destaque em **negrito** informações-chave (como datas, prazos, locais e nomes de setores).
+    - Separe parágrafos com uma linha em branco para facilitar a leitura.
 
 Contexto dos documentos oficiais da FAMED/UFPA:
 {context}
@@ -178,18 +181,10 @@ def get_full_context(question: str) -> str:
 def build_chain():
     """
     Monta a RAG chain com Query Augmentation.
-
-    Fluxo:
-    1. Query Augmentation: injeta periodo atual na query de busca
-    2. Retriever: busca os chunks mais relevantes no ChromaDB
-    3. Prompt: formata contexto + data + regras + pergunta original
-    4. LLM: gera a resposta
     """
     chain = (
         {
-            # Busca com a query enriquecida (tem periodo atual se necessario)
             "context": RunnableLambda(get_full_context),
-            # Pergunta original higienizada enviada ao LLM
             "question": RunnableLambda(sanitize_question),
             "today": RunnableLambda(get_dynamic_today),
             "current_period": RunnableLambda(get_dynamic_period),

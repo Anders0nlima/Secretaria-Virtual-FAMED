@@ -32,10 +32,12 @@ dist-ssr/
 *.local
 
 # =========================
-# Sistema Operacional
+# Sistema Operacional e IDEs
 # =========================
 .DS_Store
 Thumbs.db
+.vscode/
+.idea/
 
 # Credenciais e chaves de APIs (Google Service Account, OAuth, etc.)
 credentials/
@@ -63,3 +65,4 @@ backend/data/email_raw/
 *.mbox
 backend/data/emails_anonymized*
 backend/data/email_inventory_report*
+backend/data/feedback*.jsonl

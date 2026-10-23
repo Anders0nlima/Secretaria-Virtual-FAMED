@@ -1,42 +1,94 @@
 .chat-input-form {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  padding: 0.8rem 1rem;
+  padding: 0.6rem 0.9rem 0.25rem;
   border-top: 1px solid #e4eae6;
   background: #ffffff;
 }
 
-.chat-input-textarea {
-  flex: 1;
-  resize: none;
+/* Container unificado: agrupa a caixa de texto, o scroll e o botão de envio no rodapé interno */
+.chat-input-container {
+  display: flex;
+  flex-direction: column;
   border: 1px solid #cbd5cf;
-  border-radius: 20px;
-  padding: 0.55rem 0.95rem;
-  font-size: 0.88rem;
-  font-family: inherit;
-  line-height: 1.4;
-  outline: none;
-  transition: all 0.2s ease;
-  max-height: 96px;
-  overflow-y: auto;
+  border-radius: 16px;
   background-color: #fafbfc;
+  padding: 0.55rem 0.65rem 0.45rem 0.85rem;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.chat-input-textarea:focus {
+.chat-input-container:focus-within {
   border-color: #005a2b;
   background-color: #ffffff;
   box-shadow: 0 0 0 3px rgba(0, 90, 43, 0.12);
 }
 
-.chat-input-textarea:disabled {
+.chat-input-container--disabled {
   background-color: #f1f4f2;
   cursor: not-allowed;
 }
 
+/* Área de digitação superior */
+.chat-input-textarea {
+  width: 100%;
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0;
+  margin: 0;
+  resize: none;
+  font-size: 0.88rem;
+  font-family: inherit;
+  line-height: 1.4;
+  min-height: 24px;
+  max-height: 100px;
+  overflow-y: hidden;
+  box-sizing: border-box;
+  cursor: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #ccd5ce transparent;
+}
+
+/* Barra de rolagem contida estritamente na área de texto */
+.chat-input-textarea::-webkit-scrollbar {
+  width: 5px;
+}
+
+.chat-input-textarea::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.chat-input-textarea::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.chat-input-textarea::-webkit-scrollbar-thumb {
+  background: #ccd5ce;
+  border-radius: 4px;
+}
+
+.chat-input-textarea::-webkit-scrollbar-thumb:hover {
+  background: #9fb3a5;
+}
+
+.chat-input-textarea:disabled {
+  cursor: not-allowed;
+}
+
+/* Rodapé interno da caixa com o botão de envio no canto direito */
+.chat-input-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 0.35rem;
+  padding-top: 0.15rem;
+}
+
 .chat-input-btn {
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   border: none;
   background: linear-gradient(135deg, #005a2b 0%, #00421e 100%);
@@ -51,11 +103,13 @@
 
 .chat-input-btn:hover:not(:disabled) {
   background: linear-gradient(135deg, #006e34 0%, #004d23 100%);
-  transform: scale(1.05);
+  transform: scale(1.06);
 }
 
 .chat-input-btn:disabled {
-  background: #b0bfb6;
+  background: #c7d4cc;
+  color: #ffffff;
   cursor: not-allowed;
   transform: none;
+  opacity: 0.7;
 }

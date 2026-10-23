@@ -1,4 +1,4 @@
-﻿"""
+"""
 Router de chat: expõe o endpoint POST /chat.
 """
 from fastapi import APIRouter, HTTPException
@@ -38,7 +38,8 @@ class ChatResponse(BaseModel):
 @router.post("", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     """
-    Recebe uma pergunta e retorna a resposta baseada no Calendário Acadêmico 2026.
+    Recebe uma pergunta e retorna a resposta baseada no Calendário Acadêmico 2026,
+    normas da FAMED/UFPA e Agenda Institucional.
     """
     try:
         chain = get_chain()

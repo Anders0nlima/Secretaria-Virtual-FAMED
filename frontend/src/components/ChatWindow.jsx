@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import MessageBubble from './MessageBubble.jsx'
 import ChatInput from './ChatInput.jsx'
+import famedLogo from '../assets/logo_Famed.png'
 import './ChatWindow.css'
 
 const API_URL = `http://${window.location.hostname}:8000/chat`
@@ -78,11 +79,7 @@ export default function ChatWindow({ onClose }) {
 
         <div className="chat-window-header-info">
           <div className="chat-window-badge-icon" aria-hidden="true">
-            {/* Ícone médico vetorial */}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 2v20" />
-              <path d="M7 6c2-1 4-1 6 0 2 1 2 3 0 4-3 1.5-3 3.5 0 5 2 1 2 3 0 4-2 1-4 1-6 0" />
-            </svg>
+            <img src={famedLogo} alt="Logo FAMED" className="chat-window-badge-logo" />
           </div>
           <div>
             <p className="chat-window-title">Secretaria Virtual</p>
@@ -111,6 +108,8 @@ export default function ChatWindow({ onClose }) {
             role={msg.role}
             content={msg.content}
             sources={msg.sources}
+            showFeedback={msg.role === 'assistant' && i > 0}
+            question={i > 0 && messages[i - 1]?.role === 'user' ? messages[i - 1].content : null}
           />
         ))}
 
@@ -128,6 +127,10 @@ export default function ChatWindow({ onClose }) {
       </div>
 
       <ChatInput onSend={handleSend} disabled={isLoading} />
+
+      <p className="chat-window-disclaimer">
+        Respostas geradas com auxílio de IA com base na documentação oficial da FAMED/UFPA.
+      </p>
     </div>
   )
 }

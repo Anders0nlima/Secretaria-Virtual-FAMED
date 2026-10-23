@@ -50,7 +50,7 @@ A Secretaria da FAMED é o órgão de apoio administrativo e atendimento ao púb
 - Requerimentos oficiais: O discente abre requerimentos (trancamento, revisão de conceito, segunda chamada, aproveitamento) pelo sistema SAGITTA (sagitta.ufpa.br) direcionado à Secretaria da FAMED.
 - Declarações e Histórico Escolar: São emitidos pela Secretaria da FAMED ou pelo sistema SIGAA/UFPA. O discente pode solicitar atestado de matrícula, declaração de vínculo e histórico escolar atualizado.
 - Suporte Administrativo: Apoio às reuniões do Conselho e manutenção de prontuários acadêmicos.
-- Contato: Praça Camilo Salgado, 01, Umarizal, Belém-PA. Tel/WhatsApp: (91) 93201-7067.
+- Contato: Praça Camilo Salgado, 01, Umarizal, Belém-PA. Telefone (fixo): (91) 3201-7067.
 
 ### Coordenação de Estágios e Internato
 **Como funciona a lotação e a escala de rodízios do Internato Médico da FAMED?**

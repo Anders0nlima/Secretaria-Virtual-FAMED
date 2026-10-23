@@ -95,9 +95,9 @@ Para solicitar revisão de conceito:
 
 ### Canais Oficiais de Atendimento ao Aluno
 **Quais são os contatos, endereço e como falar com a Secretaria da Faculdade de Medicina (FAMED)?**
-**Qual o telefone, WhatsApp e e-mail da Secretaria da FAMED?**
+**Qual o telefone e e-mail da Secretaria da FAMED?**
 Para entrar em contato ou obter atendimento com a Secretaria da FAMED/UFPA:
 - **Sistema de Requerimentos (SAGITTA):** `sagitta.ufpa.br` (canal oficial para abertura de processos acadêmicos e solicitações).
-- **Telefone / WhatsApp:** (91) 93201-7067.
+- **Telefone (fixo):** (91) 3201-7067.
 - **E-mail institucional:** coord-medicina@ufpa.br.
 - **Atendimento presencial:** Sede histórica na Praça Camilo Salgado, nº 01, Bairro Umarizal, Belém - PA (e salas de apoio acadêmico no Campus Guamá da UFPA).

@@ -63,14 +63,24 @@
 }
 
 .chat-window-badge-icon {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 8px;
-  background-color: rgba(255, 255, 255, 0.16);
+  background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  padding: 2px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+}
+
+.chat-window-badge-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .chat-window-badge-icon svg {
@@ -170,6 +180,19 @@
   }
 }
 
+/* Aviso Legal / Disclaimer de IA no rodape (abaixo do campo de envio) */
+.chat-window-disclaimer {
+  padding: 0 1rem 0.55rem;
+  font-size: 0.68rem;
+  color: #718096;
+  text-align: center;
+  background: #ffffff;
+  margin: 0;
+  line-height: 1.3;
+  flex-shrink: 0;
+  user-select: none;
+}
+
 /* =========================================================================
    RESPONSIVIDADE COMPLETA PARA SMARTPHONES (<= 640px)
    ========================================================================= */
@@ -210,13 +233,20 @@
     font-size: 0.64rem;
   }
 
-  /* Oculta o ícone menor no header do mobile para economizar espaço e priorizar o botão Voltar */
+  /* Exibe o logo FAMED com dimensões adaptadas */
   .chat-window-badge-icon {
-    display: none;
+    width: 30px;
+    height: 30px;
+    display: flex;
   }
 
   .chat-window-messages {
     padding: 0.9rem;
     -webkit-overflow-scrolling: touch;
+  }
+
+  .chat-window-disclaimer {
+    font-size: 0.63rem;
+    padding: 0 0.8rem max(0.45rem, env(safe-area-inset-bottom));
   }
 }

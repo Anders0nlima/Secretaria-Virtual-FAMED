@@ -1,9 +1,9 @@
-﻿"""
+"""
 Entry point da aplicação FastAPI — Secretaria Virtual FAMED/UFPA.
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import chat
+from app.routers import chat, feedback
 
 app = FastAPI(
     title="Secretaria Virtual FAMED/UFPA",
@@ -26,6 +26,7 @@ app.add_middleware(
 # Routers
 # ---------------------------------------------------------------------------
 app.include_router(chat.router)
+app.include_router(feedback.router)
 
 
 @app.get("/", tags=["health"])

@@ -34,6 +34,74 @@
   border-bottom-left-radius: 3px;
 }
 
+/* Conteúdo Markdown no balão da resposta do assistente */
+.bubble-markdown {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: #1e2621;
+  word-break: break-word;
+}
+
+.bubble-markdown p {
+  margin: 0 0 0.55rem 0;
+  line-height: 1.5;
+}
+
+.bubble-markdown p:last-child {
+  margin-bottom: 0;
+}
+
+.bubble-markdown ul,
+.bubble-markdown ol {
+  margin: 0.35rem 0 0.55rem 1.2rem;
+  padding: 0;
+}
+
+.bubble-markdown ul {
+  list-style-type: disc;
+}
+
+.bubble-markdown ol {
+  list-style-type: decimal;
+}
+
+.bubble-markdown li {
+  margin-bottom: 0.35rem;
+  line-height: 1.45;
+  padding-left: 0.15rem;
+}
+
+.bubble-markdown li:last-child {
+  margin-bottom: 0;
+}
+
+.bubble-markdown strong {
+  font-weight: 700;
+  color: #004d23;
+}
+
+.bubble-markdown em {
+  font-style: italic;
+}
+
+.bubble-markdown a {
+  color: #005a2b;
+  text-decoration: underline;
+  word-break: break-all;
+}
+
+.bubble-markdown a:hover {
+  color: #003618;
+}
+
+/* Balão do usuário com preservação de quebra de linha */
+.bubble-text-user {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.5;
+}
+
 /* Fontes consultadas */
 .bubble-sources {
   margin-top: 0.55rem;
@@ -57,4 +125,69 @@
 .bubble-sources li {
   list-style: disc;
   margin-bottom: 2px;
+}
+
+/* Feedback de satisfação no balão do assistente */
+.bubble-feedback {
+  margin-top: 0.6rem;
+  padding-top: 0.45rem;
+  border-top: 1px dashed rgba(0, 90, 43, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #4a5d52;
+  flex-wrap: wrap;
+}
+
+.bubble-feedback-label {
+  font-size: 0.74rem;
+  color: #4a5d52;
+}
+
+.bubble-feedback-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.bubble-feedback-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+  background: #ffffff;
+  border: 1px solid #b6ccbd;
+  color: #005a2b;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1.2;
+}
+
+.bubble-feedback-btn svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  stroke: currentColor;
+}
+
+.bubble-feedback-btn:hover:not(:disabled) {
+  background: #005a2b;
+  color: #ffffff;
+  border-color: #005a2b;
+}
+
+.bubble-feedback-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.bubble-feedback-thanks {
+  font-size: 0.74rem;
+  color: #005a2b;
+  font-weight: 600;
+  font-style: italic;
 }
