@@ -45,8 +45,13 @@ Não. Embora o regulamento permita TCC com até dois discentes (em dupla), a con
 ### Quem Pode Ser Orientador de TCC
 O TCC deve ser orientado por docente da UFPA ou por especialista da área credenciado e aprovado pelo LAEPE. Caso o orientador principal não possua vínculo funcional com a UFPA, é obrigatório ter um coorientador docente com vínculo ativo com a UFPA.
 
-### Comitê de Ética em Pesquisa (CEP)
+### Comitê de Ética em Pesquisa (CEP) e Folha de Rosto
 Se a pesquisa envolver seres humanos ou animais, o projeto deve ser obrigatoriamente submetido e aprovado por um Comitê de Ética em Pesquisa (CEP) via Plataforma Brasil antes de sua execução. Cópia do parecer de aprovação do CEP deve ser encaminhada ao LAEPE. Estudos com dados de domínio público ou revisão bibliográfica sistemática dispensam submissão ao CEP.
+
+**Procedimento para obter assinatura da Direção da FAMED na Folha de Rosto e documentos do CEP:**
+- **Pré-requisito:** Os documentos do projeto devem conter a assinatura do(a) orientador(a).
+- **Assinatura Física (Papel):** Enviar os documentos do projeto, com assinatura do orientador, para o e-mail `secretariamedicina@ufpa.br` e deixar os documentos para serem assinados na Direção da FAMED (Campus Guamá), acompanhados dos meios de contato (telefone / e-mail). A Direção analisa os documentos enviados por e-mail e, se estiver tudo em conformidade, assina os documentos deixados. A Secretaria avisa o discente através dos meios de contato fornecidos para a retirada.
+- **Assinatura Digital (Eletrônica):** Se a assinatura for digital, poderá ser solicitada e devolvida diretamente pelo próprio e-mail `secretariamedicina@ufpa.br`.
 
 ---
 
@@ -70,4 +75,3 @@ O melhor trabalho de cada jornada recebe o prêmio honorífico "Ronaldo Araújo"
 
 ### Prazo Final Após a Defesa para Emissão de Diploma
 Após a aprovação na defesa, o aluno tem o prazo máximo de até 30 (trinta) dias para encaminhar à Biblioteca do ICS o exemplar final com as eventuais correções sugeridas pela banca examinadora, acompanhado da carta de encaminhamento assinada pelo orientador, condição indispensável para a expedição do diploma de médico.
-

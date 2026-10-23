@@ -150,6 +150,12 @@ CEP do Instituto de Ciências da Saúde (CEP-ICS/UFPA):
 Se a coleta for no Hospital João de Barros Barreto, use o CEP do CHU-UFPA: https://www.gov.br/hubrasil/pt-br/hospitais-universitarios/regiao-norte/chu-ufpa/ensino-e-pesquisa/comite-de-etica-e-pesquisa-cep
 Atenção: o LAEPE não interage com o CEP pelos alunos; elabore bem o projeto antes de submeter.
 
+**Como solicitar a assinatura da Direção da FAMED na Folha de Rosto e documentos de pesquisa para o CEP?**
+Para colher a assinatura da Direção da FAMED na Folha de Rosto e documentos do projeto:
+- **Pré-requisito:** Os documentos devem conter a assinatura prévia do orientador.
+- **Assinatura Física:** Enviar os arquivos do projeto com assinatura do orientador para o e-mail `secretariamedicina@ufpa.br` e deixar as vias impressas na Direção da FAMED (Campus Guamá) com telefone e e-mail para contato. A Direção analisa por e-mail e assina as vias em papel. A Secretaria avisa o aluno pelos contatos informados para retirada.
+- **Assinatura Digital:** Se a assinatura necessária for digital (ex.: Gov.br ou SIPAC), pode ser solicitada e devolvida diretamente pelo e-mail `secretariamedicina@ufpa.br`.
+
 **Como submeter projeto de TCC ou pesquisa que envolve animais (CEUA)?**
 Projetos de pesquisa ou aulas que utilizem vertebrados (inclusive embriões, fetos e formas larvais) precisam de aprovação da CEUA/UFPA antes de iniciar.
 Sistema CEUA/UFPA: https://ceua.ufpa.br/ [Verificado]
@@ -166,5 +172,6 @@ Atenção: referências antigas mencionam "CEPAE/UFPA" (nome anterior); o sistem
 - Formulário de aproveitamento de estudos: citado no regimento da comissão; obtido via SAGITTA ou com a secretaria da FAMED.
 - Modelos de projeto de TCC e termo de compromisso: verificar no Manual do TCC ou solicitar ao LAEPE.
 - Documentos do CEP (folha de rosto, carta de encaminhamento, TCLE): modelos disponíveis na página do CEP-ICS/UFPA (seção acima).
+- Assinatura de Folha de Rosto e Projetos para o CEP: enviar para `secretariamedicina@ufpa.br` (com assinatura do orientador) e deixar via física na Direção (Campus Guamá).
 - Protocolo CEUA: preenchido diretamente no Sistema CEUA/UFPA (https://ceua.ufpa.br/).
 - Tabela de Atividades Complementares: https://www.faculdademedicina.ufpa.br/index.php/atividades-complementares

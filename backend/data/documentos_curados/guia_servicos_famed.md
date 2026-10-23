@@ -146,3 +146,26 @@ Procedimento regimental que permite ao estudante solicitar a reavaliação de no
 
 ### Onde e Como Solicitar
 - Via requerimento no **SAGITTA** (`sagitta.ufpa.br`) anexando os instrumentos avaliativos e a argumentação técnica.
+
+
+---
+
+## 7. Assinatura de Documentos e Folha de Rosto para Pesquisa e Comitê de Ética (CEP)
+
+### O que é a Folha de Rosto e Documentos do CEP
+Para submeter projetos de pesquisa ou de Trabalho de Conclusão de Curso (TCC) ao Comitê de Ética em Pesquisa (CEP) por meio da Plataforma Brasil, é obrigatória a obtenção da Folha de Rosto assinada pelo dirigente institucional (Direção da FAMED), juntamente com a documentação do projeto.
+
+### Requisitos Obrigatórios
+- Todos os documentos do projeto a serem submetidos devem conter obrigatoriamente a **assinatura prévia do(a) professor(a) orientador(a)** antes de serem encaminhados à FAMED.
+
+### Procedimento para Assinatura Física (Documento Impresso em Papel)
+1. **Envio por E-mail:** O discente deve enviar os documentos completos do projeto, contendo a assinatura do orientador, para o e-mail: `secretariamedicina@ufpa.br`.
+2. **Entrega Presencial:** Deixar as vias impressas dos documentos a serem assinados na Direção da FAMED (Campus Guamá), acompanhadas obrigatoriamente dos seus meios de contato atualizados (número de telefone e e-mail).
+3. **Análise e Assinatura:** A Direção da FAMED analisa os documentos enviados por e-mail e, se estiver tudo em conformidade, assina os documentos físicos deixados na unidade.
+4. **Devolução:** A Secretaria da FAMED avisa o discente através dos meios de contato disponibilizados (telefone/e-mail) assim que os documentos estiverem assinados e disponíveis para retirada.
+
+### Procedimento para Assinatura Digital (Eletrônica)
+- Se a assinatura solicitada puder ser digital (por exemplo, via assinador eletrônico Gov.br ou processo via SIPAC):
+  1. A solicitação pode ser feita diretamente por e-mail enviando os arquivos já com a assinatura digital do orientador para `secretariamedicina@ufpa.br`.
+  2. A Direção da FAMED analisa a documentação e assina digitalmente.
+  3. O documento assinado digitalmente é devolvido ao discente pelo próprio e-mail.

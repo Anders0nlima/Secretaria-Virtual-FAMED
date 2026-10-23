@@ -78,6 +78,26 @@ Para que o Termo de Compromisso de Estágio (TCE) seja assinado pela Direção d
 3. Protocolar no SAGITTA (sagitta.ufpa.br) direcionado à Faculdade de Medicina.
 4. A Secretaria confere e envia para a Direção assinar digitalmente pelo SIPAC, devolvendo o termo assinado ao discente.
 
+### Assinatura de Folha de Rosto e Documentos de Pesquisa para o Comitê de Ética em Pesquisa (CEP)
+**Como solicitar a assinatura da Direção da FAMED na Folha de Rosto do CEP ou Plataforma Brasil?**
+**Como funciona a assinatura de documentos de projetos de pesquisa para o Comitê de Ética em Pesquisa (CEP)?**
+Para obter a assinatura da Direção da Faculdade de Medicina (FAMED) na Folha de Rosto e em documentos de projetos de pesquisa a serem submetidos ao Comitê de Ética em Pesquisa (CEP) / Plataforma Brasil:
+
+1. **Pré-requisito Obrigatório:**
+   - Todos os documentos do projeto devem conter obrigatoriamente a assinatura do(a) professor(a) orientador(a).
+
+2. **Procedimento para Assinatura Física (Documento Impresso em Papel):**
+   - Enviar os documentos do projeto, já assinados pelo orientador, para o e-mail: `secretariamedicina@ufpa.br`.
+   - Deixar os documentos físicos a serem assinados na Direção da FAMED (Campus Guamá), acompanhados obrigatoriamente dos seus meios de contato (telefone e e-mail).
+   - A Direção da FAMED analisará os documentos enviados por e-mail e, se estiver tudo em conformidade, assinará os documentos físicos deixados na faculdade.
+   - A Secretaria da FAMED avisará o discente através dos meios de contato disponibilizados (telefone/e-mail) assim que a assinatura for concluída.
+
+3. **Procedimento para Assinatura Digital (Eletrônica):**
+   - Se a assinatura solicitada for digital (ex.: assinador Gov.br ou processo SIPAC), todo o trâmite pode ser realizado eletronicamente:
+     - O discente solicita enviando o documento assinado pelo orientador para o e-mail `secretariamedicina@ufpa.br`.
+     - A Direção analisa e assina digitalmente.
+     - O documento assinado digitalmente é devolvido ao discente diretamente pelo próprio e-mail.
+
 ---
 
 ## Revisão de Notas e Conceitos
@@ -99,5 +119,7 @@ Para solicitar revisão de conceito:
 Para entrar em contato ou obter atendimento com a Secretaria da FAMED/UFPA:
 - **Sistema de Requerimentos (SAGITTA):** `sagitta.ufpa.br` (canal oficial para abertura de processos acadêmicos e solicitações).
 - **Telefone (fixo):** (91) 3201-7067.
-- **E-mail institucional:** coord-medicina@ufpa.br.
-- **Atendimento presencial:** Sede histórica na Praça Camilo Salgado, nº 01, Bairro Umarizal, Belém - PA (e salas de apoio acadêmico no Campus Guamá da UFPA).
+- **E-mails institucionais:** 
+  - `coord-medicina@ufpa.br` (Coordenação Geral)
+  - `secretariamedicina@ufpa.br` (Secretaria / Projetos de Pesquisa, Folha de Rosto e CEP)
+- **Atendimento presencial:** Sede histórica na Praça Camilo Salgado, nº 01, Bairro Umarizal, Belém - PA (e salas de apoio acadêmico e Direção no Campus Guamá da UFPA).
