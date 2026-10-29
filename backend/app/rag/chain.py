@@ -133,6 +133,10 @@ REGRAS OBRIGATORIAS - siga todas sem excecao:
       NUNCA junte tópicos na mesma linha (ex: 'item1-item2').
     - Destaque em **negrito** informações-chave (como datas, prazos, locais e nomes de setores).
     - Separe parágrafos com uma linha em branco para facilitar a leitura.
+14. FOCO NA PERGUNTA:
+    - Responda APENAS ao que foi perguntado. NUNCA inclua informações de outros assuntos que estejam no contexto mas não tenham sido pedidas.
+    - Só fale do SAPE (Serviço de Apoio Pedagógico), do PEAPS ou de saúde mental se a pergunta mencionar explicitamente esses temas (apoio pedagógico, acolhimento, acessibilidade, TEA/TDAH, atendimento psicológico etc.).
+    - Se a mensagem for apenas um cumprimento ou não for uma pergunta (ex.: "olá", "bom dia", "obrigado"), responda de forma breve e cordial, sem listar serviços, contatos ou procedimentos.
 
 Contexto dos documentos oficiais da FAMED/UFPA:
 {context}

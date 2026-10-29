@@ -1,6 +1,7 @@
 """
 Router de chat: expõe o endpoint POST /chat.
 """
+import re
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 from app.rag.chain import build_chain, get_sources
@@ -35,12 +36,28 @@ class ChatResponse(BaseModel):
 # Endpoint
 # ---------------------------------------------------------------------------
 
+GREETING_PATTERN = re.compile(
+    r"^\s*(oi+|ol[aá]+|e a[ií]|bom dia|boa tarde|boa noite|obrigad[oa]|valeu|ok|tudo bem\??|hello|hi)[\s!.,?]*$",
+    re.IGNORECASE,
+)
+
+GREETING_ANSWER = (
+    "Olá! Sou a Secretaria Virtual da FAMED/UFPA. "
+    "Posso ajudar com dúvidas sobre o Calendário Acadêmico, normas, TCC, formulários e agenda. "
+    "Qual é a sua dúvida?"
+)
+
+
 @router.post("", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     """
     Recebe uma pergunta e retorna a resposta baseada no Calendário Acadêmico 2026,
     normas da FAMED/UFPA e Agenda Institucional.
     """
+    # Cumprimentos e agradecimentos não passam pela busca nos documentos
+    if GREETING_PATTERN.match(request.message):
+        return ChatResponse(answer=GREETING_ANSWER, sources=[])
+
     try:
         chain = get_chain()
         answer = chain.invoke(request.message)

@@ -19,7 +19,7 @@ A Segunda Chamada é o direito concedido ao discente que, por motivo justificado
 - Não é permitida segunda chamada para quem apenas faltou sem justificativa documental válida.
 
 ### Prazo para Solicitação
-- **Até 48 (quarenta e oito) horas úteis** após a data da avaliação perdida ou após cessado o motivo do impedimento de saúde.
+- **Até 72 (setenta e duas) horas úteis (3 dias úteis)** após a data da avaliação perdida ou após cessado o motivo do impedimento de saúde.
 - Pedidos protocolados fora do prazo regulamentar são indeferidos, salvo parecer extraordinário da Direção.
 
 ### Documentos Obrigatórios
@@ -35,7 +35,7 @@ A Segunda Chamada é o direito concedido ao discente que, por motivo justificado
 
 ### Fluxo de Tramitação Interna
 1. **Discente:** Protocoliza a solicitação anexando o atestado/documento comprobatório.
-2. **Secretaria da FAMED:** Recebe o pedido, confere o prazo (48h) e a validade da documentação.
+2. **Secretaria da FAMED:** Recebe o pedido, confere o prazo (72h / 3 dias úteis) e a validade da documentação.
 3. **Encaminhamento Oficial:** A Secretaria emite documento formal de solicitação de segunda chamada e envia diretamente para o e-mail do(a) docente responsável pela disciplina.
 4. **Docente:** Agenda nova data e horário com o discente e aplica a avaliação de segunda chamada.
 
@@ -169,3 +169,6 @@ Para submeter projetos de pesquisa ou de Trabalho de Conclusão de Curso (TCC) a
   1. A solicitação pode ser feita diretamente por e-mail enviando os arquivos já com a assinatura digital do orientador para `secretariamedicina@ufpa.br`.
   2. A Direção da FAMED analisa a documentação e assina digitalmente.
   3. O documento assinado digitalmente é devolvido ao discente pelo próprio e-mail.
+
+
+---

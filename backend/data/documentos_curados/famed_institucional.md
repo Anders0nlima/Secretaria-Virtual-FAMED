@@ -40,6 +40,7 @@ Compete ao Diretor da Faculdade de Medicina:
 - E-mails institucionais:
   - `coord-medicina@ufpa.br` (Coordenação Geral)
   - `secretariamedicina@ufpa.br` (Secretaria Acadêmica / Projetos de Pesquisa, Folha de Rosto e CEP)
+  - `sape.famed@gmail.com` (Serviço de Apoio Pedagógico ao Estudante - SAPE)
 - Sistema de Atendimento ao Aluno: SAGITTA (sagitta.ufpa.br).
 
 ### Sistema SAGITTA — Canal Oficial de Atendimento ao Aluno

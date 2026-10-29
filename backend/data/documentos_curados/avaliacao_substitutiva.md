@@ -42,7 +42,7 @@ Atenção: Não haverá segunda chamada para a Avaliação Substitutiva sob nenh
 **Fiquei doente e faltei a uma prova na semana passada. Quantos dias eu tenho para solicitar prova substitutiva ou segunda chamada e onde dou entrada?**
 A Avaliação Substitutiva (que substitui a menor nota no final do semestre) não é o mesmo que Segunda Chamada por motivo de doença.
 Para faltas a provas ou atividades avaliativas decorrentes de problemas de saúde:
-- Prazo: o discente tem até 48 horas úteis (dois dias úteis) após a data da avaliação perdida (ou término do afastamento médico) para apresentar a justificativa médica.
+- Prazo: o discente tem até 72 horas úteis (três dias úteis) após a data da avaliação perdida (ou término do afastamento médico) para apresentar a justificativa médica.
 - Onde dar entrada: a solicitação deve ser formalizada através de abertura de processo no sistema SAGITTA (sagitta.ufpa.br) direcionado à Faculdade de Medicina, anexando o atestado médico legível com carimbo e CRM.
 - Procedimento: após deferimento institucional pela Secretaria da FAMED, o documento formal é encaminhado ao docente da matéria, que agendará e aplicará a avaliação de segunda chamada.
 - Atenção sobre faltas: o atestado médico NÃO abona, não apaga e não exclui as faltas do sistema (SIGAA) nem do diário de classe; ele serve estritamente como justificativa para viabilizar a segunda chamada de avaliação.
