@@ -23,8 +23,14 @@ def get_chain():
 # Schemas
 # ---------------------------------------------------------------------------
 
+class MessageHistoryItem(BaseModel):
+    role: str = Field(..., description="'user' ou 'assistant'")
+    content: str = Field(..., description="Conteúdo da mensagem")
+
+
 class ChatRequest(BaseModel):
     message: str = Field(..., min_length=1, max_length=1000, description="Pergunta do usuário")
+    history: list[MessageHistoryItem] = Field(default=[], description="Histórico recente da conversa")
 
 
 class ChatResponse(BaseModel):
@@ -33,12 +39,21 @@ class ChatResponse(BaseModel):
 
 
 # ---------------------------------------------------------------------------
-# Endpoint
+# Padrões Rápidos de Cumprimento e Agradecimento
 # ---------------------------------------------------------------------------
 
-GREETING_PATTERN = re.compile(
-    r"^\s*(oi+|ol[aá]+|e a[ií]|bom dia|boa tarde|boa noite|obrigad[oa]|valeu|ok|tudo bem\??|hello|hi)[\s!.,?]*$",
+THANKS_PATTERN = re.compile(
+    r"^\s*(obrigad[oa]|valeu|muito obrigad[oa]|agrade[cç]o|tks|thanks)[\s!.,?]*$",
     re.IGNORECASE,
+)
+
+GREETING_PATTERN = re.compile(
+    r"^\s*(oi+|ol[aá]+|e a[ií]|bom dia|boa tarde|boa noite|tudo bem\??|hello|hi)[\s!.,?]*$",
+    re.IGNORECASE,
+)
+
+THANKS_ANSWER = (
+    "Por nada! Se precisar de mais alguma informação ou tiver outras dúvidas sobre a FAMED/UFPA, estou à disposição."
 )
 
 GREETING_ANSWER = (
@@ -48,20 +63,29 @@ GREETING_ANSWER = (
 )
 
 
+# ---------------------------------------------------------------------------
+# Endpoint
+# ---------------------------------------------------------------------------
+
 @router.post("", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     """
-    Recebe uma pergunta e retorna a resposta baseada no Calendário Acadêmico 2026,
-    normas da FAMED/UFPA e Agenda Institucional.
+    Recebe uma pergunta e histórico recente, retornando a resposta baseada
+    no Calendário Acadêmico 2026, normas da FAMED/UFPA e Agenda Institucional.
     """
-    # Cumprimentos e agradecimentos não passam pela busca nos documentos
+    # Agradecimentos imediatos
+    if THANKS_PATTERN.match(request.message):
+        return ChatResponse(answer=THANKS_ANSWER, sources=[])
+
+    # Cumprimentos e saudações imediatas
     if GREETING_PATTERN.match(request.message):
         return ChatResponse(answer=GREETING_ANSWER, sources=[])
 
     try:
         chain = get_chain()
-        answer = chain.invoke(request.message)
-        sources = get_sources(request.message)
+        history_dicts = [item.model_dump() for item in request.history]
+        answer = chain.invoke({"question": request.message, "history": history_dicts})
+        sources = get_sources(request.message, history=history_dicts)
         return ChatResponse(answer=answer, sources=sources)
     except RuntimeError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc

@@ -23,6 +23,12 @@ export default function ChatWindow({ onClose }) {
   }, [messages, isLoading])
 
   const handleSend = async (userMessage) => {
+    // Extrai o histórico recente (últimas interações válidas, excluindo boas-vindas e erros)
+    const recentHistory = messages
+      .filter((m) => m !== WELCOME_MESSAGE && !m.content?.startsWith('Desculpe, ocorreu um erro'))
+      .slice(-4)
+      .map((m) => ({ role: m.role, content: m.content }))
+
     setMessages((prev) => [
       ...prev,
       { role: 'user', content: userMessage, sources: [] },
@@ -33,7 +39,10 @@ export default function ChatWindow({ onClose }) {
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMessage }),
+        body: JSON.stringify({
+          message: userMessage,
+          history: recentHistory,
+        }),
       })
 
       if (!response.ok) {
