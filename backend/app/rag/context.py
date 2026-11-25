@@ -1,174 +1,249 @@
 """
-Módulo de Gerenciamento de Janela de Contexto e Continuidade Conversacional.
+Módulo de Gerenciamento de Contexto Conversacional e Reescrita de Perguntas (Query Rewriting).
 
-Diferencia com precisão:
-1. Perguntas de continuidade / follow-up (mesmo contexto):
-   - Injeta o assunto ativo na busca vetorial para garantir recuperação precisa.
-   - Fornece o histórico recente ao prompt do LLM para resolução anafórica.
-2. Perguntas de novo assunto (mudança de contexto):
-   - Não contamina a busca vetorial com assuntos anteriores.
-   - Omite o histórico anterior no prompt do LLM, evitando contaminação de tópicos.
+Estratégia padrão de mercado para Conversational RAG:
+1. Se NÃO houver histórico válido (1º turno): retorna a pergunta limpa imediatamente (0 latência extra).
+2. Se houver histórico válido: usa o próprio LLM (ChatOllama, temperature=0, poucos tokens)
+   com exemplos few-shot para transformar (histórico + última pergunta) em uma
+   PERGUNTA INDEPENDENTE (Standalone Question):
+   - Se for continuação ("e se passar do prazo?", "e amanhã?"), incorpora o assunto anterior.
+   - Se o usuário mudou de assunto, ignora o histórico e corrige eventuais erros de digitação
+     (ex: "a genda do dia" -> "Qual é a agenda de atividades de hoje na FAMED?").
+3. A busca RAG e a geração final acontecem sobre a pergunta independente limpa,
+   evitando contaminação entre tópicos e repetição de respostas anteriores.
 """
 import re
 import unicodedata
+from langchain_core.messages import HumanMessage, SystemMessage
 from app.rag.intent import is_calendar_query
 
+
 # ---------------------------------------------------------------------------
-# Base de Conhecimento de Domínios Acadêmicos da FAMED/UFPA
+# Limpeza de Mensagens e Filtragem de Histórico
+# ---------------------------------------------------------------------------
+
+_FALLBACK_PREFIXES = (
+    "Não encontrei essa informação nos documentos oficiais",
+    "Desculpe, ocorreu um erro",
+)
+
+
+def clean_user_message(text: str) -> str:
+    """Corrige erros de digitação e discordâncias muito comuns antes da busca."""
+    if not text:
+        return ""
+    q = text.strip()
+    q = re.sub(r"\ba\s+genda\b", "agenda", q, flags=re.IGNORECASE)
+    q = re.sub(r"\bda\s+professor\b", "do professor", q, flags=re.IGNORECASE)
+    q = re.sub(r"\bdo\s+professora\b", "da professora", q, flags=re.IGNORECASE)
+    q = re.sub(r"\s{2,}", " ", q)
+    return q
+
+
+def filter_valid_history(history: list[dict] | None, max_turns: int = 4) -> list[dict]:
+    """
+    Filtra o histórico removendo mensagens de erro/fallback ("Não encontrei...")
+    e seus respectivos pares de pergunta, para evitar que falhas anteriores
+    contaminem o reescritor de perguntas.
+    """
+    if not history:
+        return []
+
+    cleaned: list[dict] = []
+    for item in history:
+        if not isinstance(item, dict):
+            continue
+        role = item.get("role")
+        content = (item.get("content") or "").strip()
+        if not content or role not in ("user", "assistant"):
+            continue
+
+        if role == "assistant" and content.startswith(_FALLBACK_PREFIXES):
+            if cleaned and cleaned[-1]["role"] == "user":
+                cleaned.pop()
+            continue
+
+        if role == "assistant" and len(content) > 280:
+            content = content[:280].rsplit(" ", 1)[0] + "..."
+
+        cleaned.append({"role": role, "content": content})
+
+    return cleaned[-max_turns:]
+
+
+# ---------------------------------------------------------------------------
+# Reescrita de Pergunta Independente (Standalone Question) via LLM
+# ---------------------------------------------------------------------------
+
+_REWRITER_SYSTEM_PROMPT = """Você é um reescritor de consultas para o sistema de busca da Faculdade de Medicina da UFPA (FAMED/UFPA).
+Sua ÚNICA função é reescrever a ÚLTIMA mensagem do usuário em uma pergunta independente, clara e completa em português do Brasil.
+
+REGRAS ESTRITAS:
+1. Se a última mensagem continua o assunto do histórico (ex.: "e se passar do prazo?", "quais documentos?", "e amanhã?", "qual o email?"), inclua o assunto do histórico na pergunta reescrita para que ela faça sentido sozinha.
+2. Se a última mensagem for um NOVO assunto diferente do histórico (ex.: antes falou de segunda chamada e agora perguntou sobre agenda, calendário, aproveitamento, TCC ou TEA), IGNORE COMPLETAMENTE o histórico e apenas retorne a nova pergunta de forma clara.
+3. Corrija eventuais erros simples de digitação (ex.: "a genda" -> "agenda").
+4. NUNCA responda à pergunta. Retorne APENAS a pergunta reescrita em uma única linha, sem aspas, sem prefixos e sem explicações.
+
+EXEMPLOS:
+Histórico:
+Usuário: quero solicitar uma segunda chamada de prova
+Assistente: Para solicitar segunda chamada de prova na FAMED, o prazo é de até 72 horas úteis via SAGITTA...
+Última mensagem: e se passar do prazo?
+Saída: O que acontece se passar do prazo para solicitar segunda chamada de prova na FAMED?
+
+Histórico:
+Usuário: segunda chamada
+Assistente: Para solicitar segunda chamada de prova na FAMED...
+Última mensagem: a genda do dia
+Saída: Qual é a agenda de atividades de hoje na FAMED?
+
+Histórico:
+Usuário: quando posso solicitar os aproveitamentos?
+Assistente: O prazo para protocolar aproveitamento de estudos é até o 20º dia do semestre...
+Última mensagem: tenho tea e quero saber como fazer as adaptações para a prova
+Saída: Como solicitar adaptações de prova para estudante com TEA na FAMED?
+
+Histórico:
+Usuário: Agenda das atividades do dia 25/11/2026 da famed
+Assistente: As atividades agendadas para 25/11/2026 são...
+Última mensagem: e amanhã?
+Saída: Quais são as atividades agendadas para amanhã na FAMED?"""
+
+
+def _sanitize_rewritten_output(raw_output: str, fallback: str) -> str:
+    """Garante que a saída do reescritor seja sempre uma única pergunta válida."""
+    if not raw_output:
+        return fallback
+    text = raw_output.strip()
+    # Pega apenas a primeira linha não vazia (evita explicações extras do modelo)
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+    if not lines:
+        return fallback
+    text = lines[0]
+    # Remove prefixos que modelos pequenos às vezes adicionam
+    text = re.sub(
+        r"^(sa[ií]da|pergunta reescrita|reescrita|consulta|query)\s*:\s*",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    ).strip()
+    text = text.strip('"\'` ')
+    # Se ficou vazio ou longo demais (sinal de que o modelo tentou responder), usa fallback seguro
+    if not text or len(text) < 3 or len(text) > 220:
+        return fallback
+    return text
+
+
+def rewrite_question_with_llm(question: str, history: list[dict] | None, llm) -> str:
+    """
+    Reescreve a pergunta do usuário em uma consulta independente usando o LLM
+    quando existe histórico válido. Se não houver histórico ou ocorrer falha,
+    retorna a pergunta limpa original.
+    """
+    clean_q = clean_user_message(question)
+    valid_history = filter_valid_history(history)
+
+    if not valid_history or llm is None:
+        return clean_q
+
+    hist_lines = []
+    for msg in valid_history:
+        label = "Usuário" if msg["role"] == "user" else "Assistente"
+        hist_lines.append(f"{label}: {msg['content']}")
+    hist_text = "\n".join(hist_lines)
+
+    user_prompt = (
+        f"Histórico:\n{hist_text}\n\n"
+        f"Última mensagem: {clean_q}\n"
+        f"Saída:"
+    )
+
+    try:
+        response = llm.invoke([
+            SystemMessage(content=_REWRITER_SYSTEM_PROMPT),
+            HumanMessage(content=user_prompt),
+        ])
+        raw = response.content if hasattr(response, "content") else str(response)
+        rewritten = _sanitize_rewritten_output(raw, fallback=clean_q)
+        return clean_user_message(rewritten)
+    except Exception as exc:
+        print(f"[Context] Aviso ao reescrever pergunta com LLM (usando original): {exc}")
+        return clean_q
+
+
+# ---------------------------------------------------------------------------
+# Compatibilidade retroativa: analisador heurístico leve (sem contaminar novos assuntos)
 # ---------------------------------------------------------------------------
 
 DOMAINS = {
     "TRANCAMENTO": {
-        "keywords": [
-            "trancamento", "trancar", "trancar curso", "trancamento total",
-            "trancamento administrativo", "desistencia", "desistência"
-        ],
-        "default_subject": "trancamento do período letivo total"
+        "keywords": ["trancamento", "trancar", "trancamentos", "desistencia"],
+        "default_subject": "trancamento do período letivo total",
     },
     "SEGUNDA_CHAMADA": {
         "keywords": [
-            "segunda chamada", "2 chamada", "2ª chamada", "segunda avaliacao",
-            "segunda avaliação", "segunda prova", "falta de prova", "perdi a prova",
-            "perdi prova", "perdi avaliacao", "substitutiva", "avaliacao substitutiva",
-            "avaliação substitutiva"
+            "segunda chamada", "2 chamada", "2a chamada", "segunda avaliacao",
+            "segunda prova", "perdi a prova", "perdi prova", "substitutiva",
         ],
-        "default_subject": "segunda chamada de avaliação/prova (prazo de 72 horas úteis)"
+        "default_subject": "segunda chamada de prova",
     },
     "SAPE": {
-        "keywords": [
-            "sape", "apoio pedagogico", "apoio pedagógico", "orientacao pedagogica",
-            "orientação pedagógica", "suporte pedagogico", "suporte pedagógico"
-        ],
-        "default_subject": "SAPE - Serviço de Apoio Pedagógico ao Estudante (sape.famed@gmail.com)"
+        "keywords": ["sape", "apoio pedagogico", "orientacao pedagogica"],
+        "default_subject": "SAPE - Serviço de Apoio Pedagógico ao Estudante",
     },
     "PEAPS": {
-        "keywords": [
-            "peaps", "saude mental", "saúde mental", "psicologico", "psicológico",
-            "psicossocial", "psicologa", "psicóloga", "atendimento psicologico",
-            "apoio psicologico", "psiquiatria"
-        ],
-        "default_subject": "PEAPS - Apoio Psicossocial e Saúde Mental (peaps@ufpa.br)"
+        "keywords": ["peaps", "saude mental", "psicologico", "psicossocial", "psiquiatria"],
+        "default_subject": "PEAPS - Apoio Psicossocial e Saúde Mental",
     },
     "ACESSIBILIDADE_PCD": {
         "keywords": [
-            "tea", "tdah", "pcd", "acessibilidade", "adaptacao", "adaptação",
-            "adaptacoes", "adaptações", "adaptacoes razoaveis", "adaptações razoáveis",
-            "dacess", "cades", "autista", "autismo", "deficiencia", "deficiência",
-            "tempo estendido", "sala silenciosa"
+            "tea", "tdah", "pcd", "acessibilidade", "adaptacao", "adaptacoes",
+            "dacess", "cades", "autista", "autismo", "deficiencia",
         ],
-        "default_subject": "adaptações razoáveis e acessibilidade (TEA, TDAH, PCD, CADES)"
+        "default_subject": "adaptações razoáveis e acessibilidade (TEA, TDAH, PcD)",
     },
     "CALENDARIO": {
         "keywords": [
-            "calendario", "calendário", "feriado", "recesso", "periodo letivo",
-            "período letivo", "inicio das aulas", "início das aulas", "termino das aulas",
-            "término das aulas", "ano letivo", "semestre letivo", "periodo 1", "período 1",
-            "periodo 2", "período 2", "periodo 3", "período 3", "periodo 4", "período 4",
-            "2026.1", "2026.2", "2026.3", "2026.4"
+            "calendario", "feriado", "feriados", "recesso", "periodo letivo",
+            "inicio das aulas", "termino das aulas", "fim das aulas",
+            "2026.1", "2026.2", "2026.3", "2026.4",
         ],
-        "default_subject": "calendário acadêmico 2026 e períodos letivos"
+        "default_subject": "calendário acadêmico 2026",
     },
     "TCC": {
-        "keywords": [
-            "tcc", "trabalho de conclusao", "trabalho de conclusão", "banca de tcc",
-            "orientador de tcc", "tcc 1", "tcc 2", "defesa de tcc", "artigo cientifico"
-        ],
-        "default_subject": "Trabalho de Conclusão de Curso (TCC) e normas de defesa"
+        "keywords": ["tcc", "trabalho de conclusao", "banca de tcc", "defesa de tcc"],
+        "default_subject": "Trabalho de Conclusão de Curso (TCC)",
     },
     "ESTAGIO_INTERNATO": {
-        "keywords": [
-            "internato", "estagio", "estágio", "internato medico", "internato médico",
-            "plantao", "plantão", "escala de internato", "hospital de clinicas",
-            "termo de compromisso de estagio", "tce"
-        ],
-        "default_subject": "estágio e internato médico da FAMED"
+        "keywords": ["internato", "estagio", "estagios", "plantao", "tce"],
+        "default_subject": "estágio e internato médico",
     },
     "APROVEITAMENTO": {
-        "keywords": [
-            "aproveitamento", "aproveitamento de estudos", "dispensa de disciplina",
-            "dispensa", "equivalencia", "equivalência"
-        ],
-        "default_subject": "aproveitamento de estudos e dispensa de disciplinas"
+        "keywords": ["aproveitamento", "aproveitamentos", "dispensa", "equivalencia"],
+        "default_subject": "aproveitamento de estudos",
     },
     "TAE": {
-        "keywords": [
-            "tae", "tratamento academico excepcional", "tratamento acadêmico excepcional",
-            "regime domiciliar", "exercicios domiciliares", "exercícios domiciliares"
-        ],
-        "default_subject": "Tratamento Acadêmico Excepcional (TAE - regime domiciliar)"
+        "keywords": ["tae", "tratamento academico excepcional", "regime domiciliar", "exercicios domiciliares"],
+        "default_subject": "Tratamento Acadêmico Excepcional (TAE)",
     },
     "PRESCRICAO": {
-        "keywords": [
-            "prescricao", "prescrição", "jubilamento", "jubilar", "tempo de curso",
-            "tempo maximo", "tempo máximo", "dilatacao", "dilatação de prazo"
-        ],
-        "default_subject": "tempo máximo de curso e risco de prescrição/jubilamento"
-    },
-    "CONTATO_SECRETARIA": {
-        "keywords": [
-            "contato da secretaria", "telefone da famed", "email da famed", "e-mail da famed",
-            "horario de funcionamento", "horário de funcionamento", "diretor", "diretora",
-            "direcao", "direção", "coordenador", "coordenadora", "coordenacao", "coordenação",
-            "sagitta", "sigaa", "atendimento presencial", "localizacao da secretaria"
-        ],
-        "default_subject": "contatos e atendimento da Secretaria da FAMED, Coordenação e Direção"
-    },
-    "CEP_PESQUISA": {
-        "keywords": [
-            "cep", "comite de etica", "comitê de ética", "plataforma brasil",
-            "pesquisa em seres humanos", "etica em pesquisa", "ética em pesquisa",
-            "parecer consubstanciado"
-        ],
-        "default_subject": "Comitê de Ética em Pesquisa (CEP) e Plataforma Brasil"
+        "keywords": ["prescricao", "jubilamento", "jubilar", "tempo maximo"],
+        "default_subject": "prescrição de matrícula e jubilamento",
     },
     "AGENDA": {
-        "keywords": [
-            "agenda", "reuniao", "reunião", "reunioes", "reuniões", "evento", "eventos",
-            "marcado hoje", "marcado amanha", "marcado amanhã", "atividades hoje",
-            "atividades amanha", "atividades amanhã", "sala de aula", "google agenda",
-            "conferencia", "palestra"
-        ],
-        "default_subject": "Agenda Institucional da FAMED (Google Agenda)"
-    },
-    "OUVIDORIA": {
-        "keywords": ["ouvidoria", "ouvidoria geral", "fala.br", "reclamacao", "denuncia"],
-        "default_subject": "Ouvidoria Geral da UFPA"
-    },
-    "MONITORIA": {
-        "keywords": ["monitoria", "monitor", "bolsa de monitoria", "atividades complementares", "horas complementares"],
-        "default_subject": "monitoria e atividades complementares"
+        "keywords": ["agenda", "agendamento", "reuniao", "reunioes", "evento", "eventos", "sala de aula"],
+        "default_subject": "Agenda Institucional da FAMED",
     },
 }
 
-# ---------------------------------------------------------------------------
-# Padrões Gramaticais de Anáfora e Continuidade
-# ---------------------------------------------------------------------------
-
-STRONG_ANAPHORA = re.compile(
-    r"\b(dele|dela|deles|delas|disso|desse|dessa|desses|dessas|disto|nisso|nesse|nessa|nesses|nessas|nisto|deste|desta|destes|destas|o mesmo|a mesma)\b",
-    re.IGNORECASE
-)
-
-FOLLOW_UP_INDICATORS = [
-    r"^(e|mas e|e no caso|e se|e quanto|e como|e qual|e quem|e onde|e quando|e para)\b",
-    r"\b(esse ano|este ano|nesse ano|neste ano|no proximo|no proximo ano|ano que vem)\b",
-    r"\b(ainda da tempo|da tempo|posso fazer ainda|da para fazer|consigo fazer|ainda posso)\b",
-    r"^(qual|quais|quanto|quantos|onde|como|quando|quem|por que)\s+(e|eh|é|sao|são|fica|funciona|faco|faço|solicito|peco|peço|custa|demora|tem|posso|consigo|devo)\b",
-    r"^(tem custo|eh gratuito|e gratuito|é gratuito|e de graca|é de graça|e obrigatorio|é obrigatório|precisa pagar)\b",
-    r"^(o que acontece se|o que faco se|o que faço se|e se eu perder)\b",
+_STRICT_FOLLOWUP_PATTERNS = [
+    r"^(e se|e quanto|e no caso|e para|e o prazo|e os documentos|e amanh[aã]|e hoje)\b",
+    r"\b(dele|dela|deles|delas|disso|disto|nisso|nisto)\b",
+    r"^(qual o prazo\??|quais os documentos\??|como solicito\??|onde solicito\??|ainda da tempo\??)$",
 ]
 
-PREFIX_PATTERN = re.compile(
-    r"^(o que (é|e|eh|são|sao)|como funciona(m)?|como fa[cç]o (para|pra)?|como solicitar|como pedir|onde fica(m)?|onde (é|e|eh)|onde solicito|qual (é|e|eh)|qual o|qual a|quais (são|sao|os|as)|quem (é|e|eh|foi)|como emitir|como consigo|regras (de|do|da|dos|das)?)\s+",
-    re.IGNORECASE
-)
-
-# ---------------------------------------------------------------------------
-# Funções Auxiliares
-# ---------------------------------------------------------------------------
 
 def normalize_text(text: str) -> str:
-    """Normaliza o texto removendo acentos e convertendo para minúsculas."""
     if not text:
         return ""
     norm = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("utf-8")
@@ -176,138 +251,49 @@ def normalize_text(text: str) -> str:
 
 
 def detect_domain(text: str) -> str | None:
-    """Detecta se o texto pertence a algum dos domínios acadêmicos conhecidos."""
     norm = normalize_text(text)
     for domain, info in DOMAINS.items():
         for kw in info["keywords"]:
-            norm_kw = normalize_text(kw)
-            if re.search(r"\b" + re.escape(norm_kw) + r"\b", norm):
+            if re.search(r"\b" + re.escape(normalize_text(kw)) + r"\b", norm):
                 return domain
     return None
 
 
-def extract_general_subject(text: str) -> str:
-    """Extrai o sujeito semântico essencial de uma pergunta removendo prefixos interrogativos."""
-    clean = text.strip()
-    clean = re.sub(r"[?!.,]+$", "", clean).strip()
-    sub = PREFIX_PATTERN.sub("", clean).strip()
-    sub = re.sub(r"^(o|a|os|as|um|uma|de|do|da|dos|das)\s+", "", sub, flags=re.IGNORECASE).strip()
-    return sub if len(sub) >= 3 else clean
-
-
-def find_active_domain_and_subject(history: list[dict]) -> tuple[str | None, str | None]:
+def analyze_turn(question: str, history: list[dict] | None = None) -> dict:
     """
-    Varre o histórico de trás para frente procurando o domínio e o assunto ativo
-    da última pergunta substantiva feita pelo usuário.
+    Fallback heurístico conservador (usado apenas se não houver LLM rewriter):
+    só marca follow-up quando há sinal explícito de continuidade E não houve troca de domínio.
     """
-    if not history:
-        return None, None
-    for item in reversed(history):
-        if not isinstance(item, dict):
-            continue
-        if item.get("role") == "user":
-            content = item.get("content", "")
-            domain = detect_domain(content)
-            if domain:
-                return domain, DOMAINS[domain]["default_subject"]
-            subj = extract_general_subject(content)
-            if subj and len(subj) >= 4:
-                return None, subj
-    return None, None
+    clean_q = clean_user_message(question)
+    valid_history = filter_valid_history(history)
+    curr_domain = detect_domain(clean_q)
 
+    last_domain = None
+    last_subject = None
+    for msg in reversed(valid_history):
+        if msg["role"] == "user":
+            d = detect_domain(msg["content"])
+            if d:
+                last_domain = d
+                last_subject = DOMAINS[d]["default_subject"]
+                break
 
-# ---------------------------------------------------------------------------
-# Analisador Principal do Turno Conversacional
-# ---------------------------------------------------------------------------
-
-def analyze_turn(question: str, history: list[dict]) -> dict:
-    """
-    Analisa o turno atual em relação ao histórico recente da conversa.
-
-    Retorna um dicionário com:
-    - is_follow_up (bool): True se a pergunta continuar o assunto anterior.
-    - is_calendar (bool): True se for busca na agenda (incluindo follow-ups como 'e amanhã?').
-    - active_domain (str | None): Domínio acadêmico ativo.
-    - active_subject (str | None): Assunto legível para ancoragem.
-    - retrieval_query (str): Query contextualizada para alimentar o ChromaDB.
-    - chat_history_block (str): Bloco de histórico para o prompt (vazio se novo assunto).
-    """
-    curr_clean = question.strip()
-    curr_domain = detect_domain(curr_clean)
-    last_domain, last_subject = find_active_domain_and_subject(history)
-
-    last_user_msg = None
-    for item in reversed(history):
-        if isinstance(item, dict) and item.get("role") == "user":
-            last_user_msg = item.get("content", "")
-            break
-
+    norm_curr = normalize_text(clean_q)
     is_fu = False
-    if last_user_msg:
-        norm_curr = normalize_text(curr_clean)
-        # 1. Pronome anafórico forte (ex.: 'dele', 'deles', 'disso', 'desse', 'nessa') -> follow-up
-        if STRONG_ANAPHORA.search(curr_clean):
-            is_fu = True
-        # 2. Domínio explícito diferente do anterior -> NOVO TÓPICO (reseta o contexto)
-        elif curr_domain and last_domain and curr_domain != last_domain:
+    if valid_history and last_domain:
+        if curr_domain and curr_domain != last_domain:
             is_fu = False
-        # 3. Mesmo domínio explícito -> continuidade do assunto
-        elif curr_domain and last_domain and curr_domain == last_domain:
-            is_fu = True
-        # 4. Indicadores sintáticos de continuidade (ex.: 'e quanto a', 'qual o prazo', 'dá para fazer esse ano ainda')
-        elif any(re.search(pat, norm_curr) for pat in FOLLOW_UP_INDICATORS):
-            is_fu = True
-        # 5. Pergunta curta sem domínio explícito identificável
-        elif len(curr_clean.split()) <= 6 and not curr_domain:
+        elif any(re.search(pat, norm_curr) for pat in _STRICT_FOLLOWUP_PATTERNS):
             is_fu = True
 
-    # Detecção de intenção de calendário (incluindo follow-up na agenda)
-    is_cal = is_calendar_query(curr_clean)
+    is_cal = is_calendar_query(clean_q)
     if not is_cal and is_fu and last_domain == "AGENDA":
-        if re.search(
-            r"\b(hoje|amanh[aã]|segunda|ter[cç]a|quarta|quinta|sexta|s[aá]bado|domingo|que horas|qual hor[aá]rio|onde|sala)\b",
-            curr_clean,
-            re.IGNORECASE,
-        ):
-            is_cal = True
+        is_cal = True
 
-    # Assunto ativo para ancorar a recuperação
-    active_subject = (
-        last_subject
-        if (is_fu and last_subject)
-        else (DOMAINS[curr_domain]["default_subject"] if curr_domain else None)
+    active_subject = last_subject if (is_fu and last_subject) else (
+        DOMAINS[curr_domain]["default_subject"] if curr_domain else None
     )
-
-    # Query contextualizada para busca vetorial
-    if is_fu and active_subject:
-        retrieval_query = f"{curr_clean} ({active_subject})"
-    else:
-        retrieval_query = curr_clean
-
-    # Bloco de histórico para o LLM
-    # REGRA DE OURO: Se NÃO for follow-up (novo assunto), o bloco é VAZIO,
-    # impedindo que o LLM contamine o novo assunto com dados do assunto anterior.
-    if is_fu and history:
-        recent_turns = [m for m in history if isinstance(m, dict)][-4:]
-        lines = []
-        for msg in recent_turns:
-            role_label = "Usuário" if msg.get("role") == "user" else "Assistente"
-            content = msg.get("content", "").strip()
-            # Limita respostas longas anteriores a 400 caracteres para poupar contexto
-            if role_label == "Assistente" and len(content) > 400:
-                content = content[:400] + "..."
-            lines.append(f"{role_label}: {content}")
-        history_formatted = "\n".join(lines)
-        chat_history_block = (
-            f"HISTÓRICO RECENTE DA CONVERSA (Contexto ativo: {active_subject}):\n"
-            f"{history_formatted}\n\n"
-            f"REGRAS DE CONTEXTO:\n"
-            f"- A pergunta atual continua o assunto anterior ('{active_subject}').\n"
-            f"- Use o histórico acima APENAS para identificar pronomes ou continuidade ('dele', 'disso', 'esse ano', etc.).\n"
-            f"- Responda EXCLUSIVAMENTE sobre o que foi perguntado agora, sem repetir informações desnecessárias do histórico."
-        )
-    else:
-        chat_history_block = ""
+    retrieval_query = f"{clean_q} ({active_subject})" if (is_fu and active_subject) else clean_q
 
     return {
         "is_follow_up": is_fu,
@@ -315,6 +301,5 @@ def analyze_turn(question: str, history: list[dict]) -> dict:
         "active_domain": last_domain if is_fu else curr_domain,
         "active_subject": active_subject,
         "retrieval_query": retrieval_query,
-        "chat_history_block": chat_history_block,
+        "chat_history_block": "",
     }
-

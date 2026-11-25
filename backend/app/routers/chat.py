@@ -4,7 +4,7 @@ Router de chat: expõe o endpoint POST /chat.
 import re
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
-from app.rag.chain import build_chain, get_sources
+from app.rag.chain import answer_question, build_chain, get_sources
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 
@@ -82,10 +82,8 @@ async def chat(request: ChatRequest):
         return ChatResponse(answer=GREETING_ANSWER, sources=[])
 
     try:
-        chain = get_chain()
         history_dicts = [item.model_dump() for item in request.history]
-        answer = chain.invoke({"question": request.message, "history": history_dicts})
-        sources = get_sources(request.message, history=history_dicts)
+        answer, sources = answer_question(request.message, history=history_dicts)
         return ChatResponse(answer=answer, sources=sources)
     except RuntimeError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc

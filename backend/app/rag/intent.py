@@ -4,8 +4,8 @@ Modulo para deteccao de intencao de busca em agendas, eventos, reunioes ou horar
 import re
 
 CALENDAR_PATTERNS = [
-    # Terminologia direta de agenda/evento
-    r"\bagenda\b",
+    # Terminologia direta de agenda/evento (inclui erro comum "a genda")
+    r"\ba\s*genda[s]?\b",
     r"\bagendamento[s]?\b",
     r"\bagendad[ao][s]?\b",
     r"\bevento[s]?\b",
@@ -26,9 +26,11 @@ CALENDAR_PATTERNS = [
     r"\bosce\b",
     r"\bprova pr[aá]tica\b",
     r"\bsala de simula[cç][aã]o\b",
-    # Referencia a datas especificas (formatos comuns: 05/10, 07.10, dia 5, dia 06 de outubro)
+    # Referencia a datas especificas (formatos comuns: 05/10, 07.10, dia 5, dia 24 de novembro)
     r"\b\d{1,2}[/\.]\d{1,2}\b",
     r"\bdia \d{1,2}(?: de \w+)?\b",
+    r"\baula[s]?\b.*?\b\d{1,2}\s+de\s+\w+\b",
+    r"\b(atividades?|aulas?|hor[aá]rios?)\s+do\s+dia\b",
     # Perguntas sobre horario/tempo de eventos
     r"\bque horas\b",
     r"\bquando come[cç]a\b",

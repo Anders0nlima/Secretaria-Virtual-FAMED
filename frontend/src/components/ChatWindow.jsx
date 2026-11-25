@@ -23,11 +23,26 @@ export default function ChatWindow({ onClose }) {
   }, [messages, isLoading])
 
   const handleSend = async (userMessage) => {
-    // Extrai o histórico recente (últimas interações válidas, excluindo boas-vindas e erros)
-    const recentHistory = messages
-      .filter((m) => m !== WELCOME_MESSAGE && !m.content?.startsWith('Desculpe, ocorreu um erro'))
-      .slice(-4)
-      .map((m) => ({ role: m.role, content: m.content }))
+    // Extrai o histórico recente válido (excluindo boas-vindas, erros e respostas de fallback sem contexto)
+    const isFallbackOrError = (content = '') =>
+      content.startsWith('Desculpe, ocorreu um erro') ||
+      content.startsWith('Não encontrei essa informação nos documentos oficiais')
+
+    const validMessages = []
+    for (let i = 0; i < messages.length; i++) {
+      const m = messages[i]
+      if (m === WELCOME_MESSAGE) continue
+      if (m.role === 'assistant' && isFallbackOrError(m.content)) {
+        // Remove também a pergunta do usuário imediatamente anterior que gerou erro/fallback
+        if (validMessages.length > 0 && validMessages[validMessages.length - 1].role === 'user') {
+          validMessages.pop()
+        }
+        continue
+      }
+      validMessages.push({ role: m.role, content: m.content })
+    }
+
+    const recentHistory = validMessages.slice(-4)
 
     setMessages((prev) => [
       ...prev,

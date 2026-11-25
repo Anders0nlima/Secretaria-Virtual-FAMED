@@ -3,17 +3,15 @@ Resolução n. 5.986 - CONSEPE, de 15.10.2025
 
 ---
 
-## Períodos Letivos
+## Períodos Letivos — Resumo do Calendário Acadêmico 2026 (Início e Fim das Aulas)
 
-O Período 1 (Intensivo) vai de 05 de janeiro de 2026 até 06 de março de 2026, totalizando 50 dias letivos.
+Resumo oficial dos períodos letivos do Calendário Acadêmico UFPA 2026 (datas de início e término/fim das aulas):
+- **Período 2026.1 (Período 1 - Intensivo):** Início das aulas em **05 de janeiro de 2026** e fim/término das aulas em **06 de março de 2026**, totalizando 50 dias letivos.
+- **Período 2026.2 (Período 2 - Extensivo):** Início das aulas em **23 de março de 2026** e fim/término das aulas em **23 de julho de 2026**, totalizando 100 dias letivos.
+- **Período 2026.3 (Período 3 - Intensivo):** Início das aulas em **01 de julho de 2026** e fim/término das aulas em **28 de agosto de 2026**, totalizando 50 dias letivos.
+- **Período 2026.4 (Período 4 - Extensivo):** Início das aulas em **24 de agosto de 2026** e fim/término das aulas em **23 de dezembro de 2026**, totalizando 100 dias letivos.
 
-O Período 2 (Extensivo) vai de 23 de março de 2026 até 23 de julho de 2026, totalizando 100 dias letivos.
-
-O Período 3 (Intensivo) vai de 01 de julho de 2026 até 28 de agosto de 2026, totalizando 50 dias letivos.
-
-O Período 4 (Extensivo) vai de 24 de agosto de 2026 até 23 de dezembro de 2026, totalizando 100 dias letivos.
-
-Existe sobreposição entre o Período 2 e o Período 3 de 01 a 23 de julho de 2026, e entre o Período 3 e o Período 4 de 24 a 28 de agosto de 2026.
+Existe sobreposição entre o Período 2026.2 e o Período 2026.3 de 01 a 23 de julho de 2026, e entre o Período 2026.3 e o Período 2026.4 de 24 a 28 de agosto de 2026.
 
 ---
 

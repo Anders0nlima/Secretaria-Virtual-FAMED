@@ -26,36 +26,100 @@ _cached_at: Optional[datetime.datetime] = None
 CACHE_TTL_MINUTES = 5
 
 STOPWORDS = {
-    "onde", "esta", "está", "sendo", "aula", "aulas", "da", "de", "do", "das", "dos",
-    "o", "a", "os", "as", "e", "em", "na", "no", "nas", "nos", "para", "por", "com",
+    "onde", "esta", "está", "estao", "estão", "sendo", "aula", "aulas", "da", "de", "do", "das", "dos",
+    "o", "a", "os", "as", "e", "em", "na", "no", "nas", "nos", "para", "por", "com", "pelo", "pela",
     "prof", "professor", "professora", "profa", "profo", "docente", "docentes", "quem",
     "qual", "quais", "que", "horas", "hora", "quando", "comeca", "começa", "termina",
-    "fim", "inicio", "início", "acontece", "ocorre", "vai", "ser", "ter", "tem", "hoje",
-    "amanha", "amanhã", "ontem", "agora", "marcado", "marcada", "agendado", "agendada",
-    "programado", "programada", "evento", "eventos", "atendimento", "secretaria",
+    "fim", "inicio", "início", "acontece", "acontecem", "acontecer", "ocorre", "ocorrem", "ocorrer",
+    "vai", "vao", "vão", "ser", "sao", "são", "foi", "foram", "sera", "será", "serao", "serão",
+    "ter", "tem", "temos", "havera", "haverá", "existe", "existem", "fica", "ficam",
+    "hoje", "amanha", "amanhã", "ontem", "agora", "semana", "mes", "mês", "ano",
+    "proximo", "próximo", "proxima", "próxima", "proximos", "próximos", "proximas", "próximas",
+    "marcado", "marcada", "marcados", "marcadas",
+    "agendado", "agendada", "agendados", "agendadas",
+    "programado", "programada", "programados", "programadas",
+    "evento", "eventos", "atendimento", "secretaria", "famed", "ufpa", "medicina", "faculdade",
+    "campus", "guama", "guamá", "institucional", "oficial", "oficiais",
     "sala", "salas", "dando", "dar", "dia", "dias", "sobre", "fazer", "saber", "pode", "dizer",
-    "me", "uma", "um", "uns", "umas", "agenda", "agendas", "prova", "provas", "exame",
-    "exames", "atividade", "atividades", "coisa", "coisas", "acontecendo", "horario", "horário"
+    "quero", "preciso", "gostaria", "ver", "mostrar", "mostre", "liste", "listar",
+    "me", "uma", "um", "uns", "umas", "agenda", "agendas", "genda", "prova", "provas", "exame",
+    "exames", "atividade", "atividades", "coisa", "coisas", "acontecendo", "horario", "horário",
+    "horarios", "horários", "todas", "todos", "tudo", "alguma", "algum", "algumas", "alguns",
+    "esse", "este", "essa", "nesse", "neste", "nessa", "nesta", "aqui",
+    "janeiro", "fevereiro", "marco", "março", "abril", "maio", "junho",
+    "julho", "agosto", "setembro", "outubro", "novembro", "dezembro",
+    "jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez",
+}
+
+MONTH_MAP = {
+    "janeiro": 1, "jan": 1,
+    "fevereiro": 2, "fev": 2,
+    "marco": 3, "março": 3, "mar": 3,
+    "abril": 4, "abr": 4,
+    "maio": 5, "mai": 5,
+    "junho": 6, "jun": 6,
+    "julho": 7, "jul": 7,
+    "agosto": 8, "ago": 8,
+    "setembro": 9, "set": 9,
+    "outubro": 10, "out": 10,
+    "novembro": 11, "nov": 11,
+    "dezembro": 12, "dez": 12,
 }
 
 
 def extract_query_entities(query: str) -> List[str]:
     """Extrai entidades principais (nomes de pessoas, matérias, códigos) da pergunta."""
     words = re.findall(r"[a-zA-Z0-9áéíóúâêîôûãõçÁÉÍÓÚÂÊÎÔÛÃÕÇ]+", (query or "").lower())
-    return [w for w in words if w not in STOPWORDS and len(w) > 2]
+    return [w for w in words if w not in STOPWORDS and not w.isdigit() and len(w) > 2]
 
 
 def extract_date_filter(query: str, today: datetime.date) -> Optional[str]:
-    """Detecta se a pergunta solicita uma data específica (hoje, amanhã ou DD/MM)."""
+    """
+    Detecta se a pergunta solicita uma data específica (em ordem de especificidade):
+    1. 'DD/MM', 'DD/MM/YYYY', 'DD.MM'
+    2. '24 de novembro', 'dia 24 de novembro de 2026', '24 nov'
+    3. 'dia 24' (assume mês/ano correntes)
+    4. 'amanhã'
+    5. 'hoje', 'agora', 'do dia' (quando não seguido de data explícita)
+    """
     q_low = (query or "").lower()
-    if "hoje" in q_low or "agora" in q_low:
-        return today.strftime("%d/%m/%Y")
-    if "amanhã" in q_low or "amanha" in q_low:
-        return (today + datetime.timedelta(days=1)).strftime("%d/%m/%Y")
-    match = re.search(r"\b(\d{1,2})[/\.](\d{1,2})\b", q_low)
+
+    # 1. Formato numérico explícito: 25/11/2026, 25/11, 25.11
+    match = re.search(r"\b(\d{1,2})[/\.](\d{1,2})(?:[/\.](\d{2,4}))?\b", q_low)
     if match:
         day, month = int(match.group(1)), int(match.group(2))
-        return f"{day:02d}/{month:02d}/{today.year}"
+        year = int(match.group(3)) if match.group(3) else today.year
+        if year < 100:
+            year += 2000
+        if 1 <= day <= 31 and 1 <= month <= 12:
+            return f"{day:02d}/{month:02d}/{year}"
+
+    # 2. Formato por extenso: "24 de novembro", "24 de novembro de 2026", "24 nov"
+    month_pattern = "|".join(MONTH_MAP.keys())
+    match_ext = re.search(
+        rf"\b(\d{{1,2}})\s+(?:de\s+)?({month_pattern})\b(?:\s+(?:de\s+)?(\d{{4}}))?",
+        q_low,
+    )
+    if match_ext:
+        day = int(match_ext.group(1))
+        month = MONTH_MAP[match_ext.group(2)]
+        year = int(match_ext.group(3)) if match_ext.group(3) else today.year
+        if 1 <= day <= 31:
+            return f"{day:02d}/{month:02d}/{year}"
+
+    # 3. Formato apenas dia do mês corrente: "dia 24"
+    match_day = re.search(r"\bdia\s+(\d{1,2})\b", q_low)
+    if match_day:
+        day = int(match_day.group(1))
+        if 1 <= day <= 31:
+            return f"{day:02d}/{today.month:02d}/{today.year}"
+
+    # 4. Datas relativas
+    if "amanhã" in q_low or "amanha" in q_low:
+        return (today + datetime.timedelta(days=1)).strftime("%d/%m/%Y")
+    if "hoje" in q_low or "agora" in q_low or re.search(r"\bdo\s+dia\b(?!\s*\d)", q_low):
+        return today.strftime("%d/%m/%Y")
+
     return None
 
 
